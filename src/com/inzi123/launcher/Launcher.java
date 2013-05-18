@@ -1,123 +1,216 @@
 package com.inzi123.launcher;
 
+import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.inzi123.cache.IconCache;
-import com.inzi123.entity.ApplicationInfo;
-import com.nizi123.launcher.R;
-
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
-import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
-import android.graphics.drawable.Drawable;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
+import android.provider.Settings;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AbsListView;
 import android.widget.AdapterView;
 import android.widget.BaseAdapter;
 import android.widget.GridView;
-import android.widget.LinearLayout;
+import android.widget.PopupMenu;
 import android.widget.TextView;
+
+import com.inzi123.cache.IconCache;
+import com.inzi123.db.DBHelper;
+import com.inzi123.entity.ApplicationInfo;
+import com.inzi123.entity.FavoriteApp;
+import com.inzi123.utils.Utils;
+import com.nizi123.launcher.R;
 
 public class Launcher extends Activity {
 
 	private GridView allAppGv;
+	private GridView favAppGv;
+
 	private ArrayList<ApplicationInfo> allAppList = new ArrayList<ApplicationInfo>();
+	private ArrayList<FavoriteApp> favoriteAppList = new ArrayList<FavoriteApp>();
+
 	PackageManager pm;
 	IconCache iconCache;
 	private Location application;
+
+	private DBHelper dbHelper;
+	private LayoutInflater li;
+	FavortieGvAdapter favortieGvAdapter;
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
-		
-		application=(Location) getApplication();
-		iconCache=application.getIconCache();
-		
-		allAppGv=(GridView) findViewById(R.id.allAppGv);
-		pm=getPackageManager();
+		li = LayoutInflater.from(Launcher.this);
+		application = (Location) getApplication();
+		iconCache = application.getIconCache();
+		dbHelper = new DBHelper(this);
+
+		allAppGv = (GridView) findViewById(R.id.allAppGv);
+		favAppGv = (GridView) findViewById(R.id.favAppGv);
+		pm = getPackageManager();
 		loadApps();
 		AppAdapter adapter = new AppAdapter();
+		favortieGvAdapter = new FavortieGvAdapter();
+
 		allAppGv.setAdapter(adapter);
 
 		allAppGv.setOnItemClickListener(appClickListener);
-		
-		allAppGv.setOnItemLongClickListener(appItemLongClickListener);
 
+		allAppGv.setOnItemLongClickListener(appItemLongClickListener);
+		loadFavoriteApp();
+
+		favAppGv.setOnItemClickListener(favClickListener);
+		favAppGv.setOnItemLongClickListener(favItemLongClickListener);
 	}
-	
-	private AdapterView.OnItemLongClickListener appItemLongClickListener=new AdapterView.OnItemLongClickListener() {
+
+	private AdapterView.OnItemClickListener favClickListener = new AdapterView.OnItemClickListener() {
+
+		@Override
+		public void onItemClick(AdapterView<?> parent, View view, int position,
+				long id) {
+			FavoriteApp f = (FavoriteApp) parent.getItemAtPosition(position);
+			try {
+				Intent i = Intent.parseUri(f.getUri(), 0);
+				startActivity(i);
+			} catch (URISyntaxException e) {
+				e.printStackTrace();
+			}
+
+		}
+	};
+
+	private AdapterView.OnItemLongClickListener appItemLongClickListener = new AdapterView.OnItemLongClickListener() {
 		@Override
 		public boolean onItemLongClick(AdapterView<?> arg0, View arg1,
 				int arg2, long arg3) {
-			ResolveInfo ri=(ResolveInfo) arg0.getItemAtPosition(arg2);
-			Uri packageURI = Uri.parse("package:"+ri.activityInfo.packageName);   
-			Intent uninstallIntent = new Intent(Intent.ACTION_DELETE, packageURI);   
-			startActivity(uninstallIntent);
+			showAppMenu(arg1, arg0, arg2);
 			return false;
 		}
 	};
+	
+	private AdapterView.OnItemLongClickListener favItemLongClickListener=new AdapterView.OnItemLongClickListener() {
+
+		@Override
+		public boolean onItemLongClick(AdapterView<?> parent, View view,
+				int position, long id) {
+			FavoriteApp app=(FavoriteApp) parent.getItemAtPosition(position);
+			int count=dbHelper.delAppById(app.getId());
+			if(count>0){
+				loadFavoriteApp();
+			}
+			return false;
+		}
+	};
+	
 
 	private AdapterView.OnItemClickListener appClickListener = new AdapterView.OnItemClickListener() {
 
 		@Override
 		public void onItemClick(AdapterView<?> arg0, View arg1, int arg2,
 				long arg3) {
-			ApplicationInfo ai=(ApplicationInfo) arg0.getItemAtPosition(arg2);
+			ApplicationInfo ai = (ApplicationInfo) arg0.getItemAtPosition(arg2);
 			// ȡ������İ���
-			Intent i = pm.getLaunchIntentForPackage(ai.getPackageName(ai.intent));
+			Intent i = pm.getLaunchIntentForPackage(ai
+					.getPackageName(ai.intent));
 			// ���ó��򲻿���������ϵͳ�Դ�İ��кܶ���û����ڵģ��᷵��NULL
+			String url = i.toUri(0);
+			try {
+				i = Intent.parseUri(url, 0);
+			} catch (URISyntaxException e) {
+				e.printStackTrace();
+			}
 			if (i != null)
 				startActivity(i);
 
 		}
 	};
 
-	
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		// Inflate the menu; this adds items to the action bar if it is present.
 		getMenuInflater().inflate(R.menu.main, menu);
 		return true;
 	}
+
+	protected void showAppMenu(View anchor, final AdapterView<?> arg0,
+			final int arg2) {
+		final ApplicationInfo ai = (ApplicationInfo) arg0
+				.getItemAtPosition(arg2);
+		final PopupMenu menu = new PopupMenu(this, anchor);
+		Menu m = menu.getMenu();
+		m.add(0, 0, 1, "详情");
+		m.add(0, 1, 2, "收藏");
+		m.add(0, 2, 3, "卸载");
+		menu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+
+			@Override
+			public boolean onMenuItemClick(MenuItem item) {
+				switch (item.getItemId()) {
+				case 0: {
+					Utils.showInstalledAppDetails(Launcher.this, ai.getPackageName(ai.intent));
+					menu.dismiss();
+					break;
+				}
+				case 1: {
+					dbHelper.addApp(ai, ai.resolveInfo.loadLabel(pm).toString());
+					loadFavoriteApp();
+					Log.d("ddv", "收藏");
+					menu.dismiss();
+					break;
+				}
+				case 2: {
+
+					Uri packageURI = Uri.parse("package:"
+							+ ai.getPackageName(ai.intent));
+					Intent uninstallIntent = new Intent(Intent.ACTION_DELETE,
+							packageURI);
+					startActivity(uninstallIntent);
+					menu.dismiss();
+					break;
+				}
+				}
+				return false;
+			}
+		});
+		menu.show();
+
+	}
+
 	
 	private void loadApps() {
 
 		Intent mainIntent = new Intent(Intent.ACTION_MAIN, null);
 		mainIntent.addCategory(Intent.CATEGORY_LAUNCHER);
 		final List<ResolveInfo> apps = pm.queryIntentActivities(mainIntent, 0);
-		// Collections.sort(apps, new
-		// ResolveInfo.DisplayNameComparator(manager));
 		for (ResolveInfo resolveInfo : apps) {
-			
-			ApplicationInfo ai=new ApplicationInfo(getPackageManager(), resolveInfo, iconCache, null);
+
+			ApplicationInfo ai = new ApplicationInfo(getPackageManager(),
+					resolveInfo, iconCache, null);
 			allAppList.add(ai);
 		}
-		// List<PackageInfo> data=pm.getInstalledPackages(0);
-		// for (PackageInfo pi : data) {
-		//
-		// if((pi.applicationInfo.flags&ApplicationInfo.FLAG_SYSTEM)<=0){
-		// appList.add(pi);
-		// }
-		// }
-
 	}
-	
-	class AppAdapter extends BaseAdapter {
-		private LayoutInflater li;
 
-		public AppAdapter() {
-			li = LayoutInflater.from(Launcher.this);
-		}
+	private void loadFavoriteApp() {
+		favoriteAppList = dbHelper.getApps();
+
+		favAppGv.setAdapter(favortieGvAdapter);
+		favortieGvAdapter.notifyDataSetChanged();
+	}
+
+	class AppAdapter extends BaseAdapter {
 
 		@Override
 		public int getCount() {
@@ -140,42 +233,66 @@ public class Launcher extends Activity {
 			return arg0;
 		}
 
-//		private ViewHolder holder;
-
 		@Override
 		public View getView(int arg0, View cv, ViewGroup arg2) {
-//			if (cv == null) {
-//				cv = li.inflate(R.layout.item_app, null);
-//				holder = new ViewHolder();
-//				holder.icon = (ImageView) cv.findViewById(R.id.appIcon);
-//				holder.name = (TextView) cv.findViewById(R.id.appName);
-//				cv.setTag(holder);
-//			} else {
-//				holder = (ViewHolder) cv.getTag();
-//			}
-			// PackageInfo pi=appList.get(arg0);
-			// ApplicationInfo info=pi.applicationInfo;
-			// holder.icon.setImageDrawable(pm.getApplicationIcon(info));
-			// holder.name.setText(pm.getApplicationLabel(info));
 			ApplicationInfo ai = allAppList.get(arg0);
-//			holder.icon.setImageDrawable(ri.activityInfo.loadIcon(pm));
-//			holder.name.setText(ri.activityInfo.loadLabel(pm));
-			cv= li.inflate(R.layout.app_icon, null);
-			TextView tv=(TextView) cv.findViewById(R.id.app_icon);
-			BitmapDrawable drawable=new BitmapDrawable(iconCache.getIcon(ai.intent));
-			
-			drawable.setBounds(0, 0, 80, 80);  
-			tv.setCompoundDrawables(null,drawable , null,null);
+			cv = li.inflate(R.layout.app_icon, null);
+			TextView tv = (TextView) cv.findViewById(R.id.app_icon);
+			@SuppressWarnings("deprecation")
+			BitmapDrawable drawable = new BitmapDrawable(
+					iconCache.getIcon(ai.intent));
+
+			drawable.setBounds(0, 0, 80, 80);
+			tv.setCompoundDrawables(null, drawable, null, null);
 			tv.setText(ai.resolveInfo.loadLabel(getPackageManager()));
-//			tv.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, 80));
-//			Log.i("ddv", ri.activityInfo.loadLabel(pm).toString());
 			return cv;
 		}
 
-//		class ViewHolder {
-//			ImageView icon;
-//			TextView name;
-//		}
+	}
+
+	private class FavortieGvAdapter extends BaseAdapter {
+
+		@Override
+		public int getCount() {
+			if (favoriteAppList != null) {
+				return favoriteAppList.size();
+			}
+			return 0;
+		}
+
+		@Override
+		public Object getItem(int position) {
+			if (favoriteAppList != null) {
+				return favoriteAppList.get(position);
+			}
+			return null;
+		}
+
+		@Override
+		public long getItemId(int position) {
+			return position;
+		}
+
+		@SuppressWarnings("deprecation")
+		@Override
+		public View getView(int position, View cv, ViewGroup parent) {
+			FavoriteApp app = favoriteAppList.get(position);
+			cv = li.inflate(R.layout.app_icon, null);
+			TextView tv = (TextView) cv.findViewById(R.id.app_icon);
+			BitmapDrawable drawable = null;
+			try {
+				drawable = new BitmapDrawable(iconCache.getIcon(Intent
+						.parseUri(app.uri, 0)));
+			} catch (URISyntaxException e) {
+				e.printStackTrace();
+			}
+
+			drawable.setBounds(0, 0, 80, 80);
+			tv.setCompoundDrawables(null, drawable, null, null);
+			tv.setText(app.getTitle());
+			return cv;
+		}
+
 	}
 
 }
