@@ -1,4 +1,4 @@
-package com.nizi123.db;
+package com.inzi123.db;
 
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
@@ -29,6 +29,10 @@ public class DBHelper extends SQLiteOpenHelper {
 	@Override
 	public void onUpgrade(SQLiteDatabase arg0, int arg1, int arg2) {
 
+	}
+	
+	public void addApp(){
+		
 	}
 
 }

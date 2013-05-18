@@ -21,12 +21,17 @@
             android:textSize="22sp" />
     </LinearLayout>
 
-    <com.nizi123.widget.ScrollLayout
-       android:layout_width="fill_parent"    
-	  android:layout_height="fill_parent"
+    <com.inzi123.widget.ScrollLayout
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
         android:layout_weight="1" >
-<TextView android:layout_width="match_parent" android:text="设置"
-            android:layout_height="wrap_content" android:background="@android:color/holo_blue_light"/>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@android:color/holo_blue_light"
+            android:text="设置" />
+
         <GridView
             android:id="@+id/allAppGv"
             android:layout_width="match_parent"
@@ -34,8 +39,12 @@
             android:layout_below="@+id/layout_weather"
             android:numColumns="4" >
         </GridView>
-        <TextView android:layout_width="match_parent"  android:text="测试"
-            android:layout_height="wrap_content" android:background="@android:color/holo_blue_light"/>
-    </com.nizi123.widget.ScrollLayout>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@android:color/holo_blue_light"
+            android:text="测试" />
+    </com.inzi123.widget.ScrollLayout>
 
 </LinearLayout>
