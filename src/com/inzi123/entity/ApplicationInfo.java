@@ -19,6 +19,8 @@ package com.inzi123.entity;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+import com.inzi123.cache.IconCache;
+
 import android.content.ComponentName;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -52,6 +54,8 @@ public class ApplicationInfo extends ItemInfo {
 
 	public static final int DOWNLOADED_FLAG = 1;
 	static final int UPDATED_SYSTEM_APP_FLAG = 2;
+	
+	public ResolveInfo resolveInfo;
 
 	public int flags = 0;
 
@@ -63,9 +67,11 @@ public class ApplicationInfo extends ItemInfo {
 	 * Must not hold the Context.
 	 */
 	public ApplicationInfo(PackageManager pm, ResolveInfo info,
-			com.inzi123.cache.IconCache iconCache, HashMap<Object, CharSequence> labelCache) {
+			IconCache iconCache, HashMap<Object, CharSequence> labelCache) {
 		final String packageName = info.activityInfo.applicationInfo.packageName;
-
+		
+		resolveInfo=info;
+		
 		this.componentName = new ComponentName(packageName,
 				info.activityInfo.name);
 		this.container = ItemInfo.NO_ID;
