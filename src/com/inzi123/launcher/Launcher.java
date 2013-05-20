@@ -86,7 +86,6 @@ public class Launcher extends Activity {
 		String imagekey = sp.getString("city", "奥斯汀");
 		layout_weather.setBackgroundResource(Datas.pics.get(imagekey));
 		
-		Log.i("ddv", PreferenceUtils.getIntValue(this, PreferenceUtils.ALLCOLUMNS)+"*******");
 	}
 
 	private HashMap<String,Integer> appSetting=new HashMap<String, Integer>();
@@ -106,6 +105,27 @@ public class Launcher extends Activity {
 		favSetting.put(PreferenceUtils.FAVTEXT, PreferenceUtils.getIntValue(this, PreferenceUtils.FAVTEXT));
 	}
 	
+	private boolean appTextShow=true;
+	private int appTextSize=4;
+	private int appIconSize=8;
+	
+	private void setAppGv(){
+		//列数
+		allAppGv.setNumColumns(appSetting.get(PreferenceUtils.ALLCOLUMNS));
+		//图标大小
+		
+		//行高
+		int num=appSetting.get(PreferenceUtils.ALLLINES);
+		if(num>0){
+			allAppGv.setVerticalSpacing(num);
+		}else{
+			appTextShow=false;
+		}
+		//文本大小
+		appTextSize=appSetting.get(PreferenceUtils.ALLTEXT);
+		
+	}
+	
 	class AsyncLoadSet extends AsyncTask<Void,Void,Void>{
 
 		@Override
@@ -115,6 +135,12 @@ public class Launcher extends Activity {
 			return null;
 		}
 
+		@Override
+		protected void onPostExecute(Void result) {
+			super.onPostExecute(result);
+			
+		}
+		
 	} 
 	
 	private AdapterView.OnItemClickListener favClickListener = new AdapterView.OnItemClickListener() {
