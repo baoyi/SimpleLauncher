@@ -23,10 +23,10 @@ public class SettingsFragment extends PreferenceFragment {
 					public boolean onPreferenceChange(Preference arg0,
 							Object arg1) {
 						Log.i("ada", "" + arg1);
-						
+
 						Intent intent = new Intent("com.change.image");
 						intent.putExtra("city", arg1.toString());
-                        getActivity().sendBroadcast(intent);
+						getActivity().sendBroadcast(intent);
 						return true;
 					}
 				});

@@ -27,7 +27,3 @@ public class TimePreference extends SeekBarPreference {
 
 }
 
-/*
- * Location: D:\tool\dex2jar\sf_dex2jar.jar Qualified Name:
- * net.alamoapps.launcherdfm.TimePreference JD-Core Version: 0.6.2
- */
