@@ -46,7 +46,5 @@
         <net.alamoapps.launcherdfm.SeekBarPreference android:max="36" android:title="文本大小" android:key="allText" android:summary=" " android:defaultValue="10" robobunny:min="4" robobunny:unitsLeft="" robobunny:unitsRight=" sp" />
         <net.alamoapps.launcherdfm.IconPreference android:title="图标包" android:key="allPack" android:summary="使用 ADW、Launcher Pro 或 Apex 图标包" android:defaultValue="Default" />
     </PreferenceScreen>
-    <PreferenceScreen android:title="安智汉化组 小手汉化" android:summary="主页：http://www.anzhi.com\n论坛：http://bbs.anzhi.com">
-        <intent android:action="android.intent.action.VIEW" android:data="http://bbs.anzhi.com" />
-    </PreferenceScreen>
+   
 </PreferenceScreen>
