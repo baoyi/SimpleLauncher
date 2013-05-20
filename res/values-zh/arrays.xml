@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="themes">
+        <item>浅色</item>
+        <item>深色</item>
+        <item>自动</item>
+    </string-array>
+    <string-array name="cities">
+        <item>奥斯汀</item>
+        <item>海滩</item>
+        <item>柏林</item>
+        <item>芝加哥</item>
+        <item>通用</item>
+        <item>大平原</item>
+        <item>伦敦</item>
+        <item>纽约</item>
+        <item>旧金山</item>
+        <item>西雅图</item>
+        <item>塔霍湖</item>
+    </string-array>
+    <string-array name="actions">
+        <item>无操作</item>
+        <item>搜索</item>
+        <item>语音搜索</item>
+        <item>时钟</item>
+        <item>切换状态栏</item>
+        <item>切换主题</item>
+        <item>展开通知面板</item>
+    </string-array>
+</resources>

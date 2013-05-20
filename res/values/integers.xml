@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <integer name="COLOR_BLACK">-16777216</integer>
+    <integer name="COLOR_GREEN">-16711936</integer>
+    <integer name="clockmax">72</integer>
+    <integer name="clockmin">12</integer>
+    <integer name="datemax">28</integer>
+    <integer name="datemin">10</integer>
+</resources>

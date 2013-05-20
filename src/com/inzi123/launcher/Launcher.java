@@ -27,7 +27,7 @@ import com.inzi123.cache.IconCache;
 import com.inzi123.db.DBHelper;
 import com.inzi123.entity.ApplicationInfo;
 import com.inzi123.entity.FavoriteApp;
-import com.inzi123.manager.SettingManager;
+import com.inzi123.fragment.SettingsFragment;
 import com.inzi123.utils.Utils;
 import com.nizi123.launcher.R;
 
@@ -72,8 +72,8 @@ public class Launcher extends Activity {
 
 		favAppGv.setOnItemClickListener(favClickListener);
 		favAppGv.setOnItemLongClickListener(favItemLongClickListener);
-		SettingManager settingManager=new SettingManager();
-		settingManager.init(this);
+		SettingsFragment f=new SettingsFragment();
+		f.getView();
 	}
 
 	private AdapterView.OnItemClickListener favClickListener = new AdapterView.OnItemClickListener() {

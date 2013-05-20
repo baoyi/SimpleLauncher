@@ -1,35 +1,51 @@
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android" >
 
-    <net.margaritov.preference.colorpicker.ColorPickerPreference
-        android:defaultValue="@integer/COLOR_GREEN"
-        android:key="color2"
-        android:persistent="false"
-        android:summary="主题颜色"
-        android:title="主题颜色" />
-    <!-- NOTE: EditTextPreference accepts EditText attributes. -->
-    <!-- NOTE: EditTextPreference's summary should be set to its value by the activity code. -->
-    <EditTextPreference
-        android:capitalize="words"
-        android:defaultValue="@string/pref_default_display_name"
-        android:inputType="textCapWords"
-        android:key="example_text"
-        android:maxLines="1"
-        android:selectAllOnFocus="true"
-        android:singleLine="true"
-        android:title="@string/pref_title_display_name" />
 
-    <!--
-         NOTE: Hide buttons to simplify the UI. Users can touch outside the dialog to
-         dismiss it.
-    -->
-    <!-- NOTE: ListPreference's summary should be set to its value by the activity code. -->
     <ListPreference
-        android:defaultValue="-1"
-        android:entries="@array/pref_example_list_titles"
-        android:entryValues="@array/pref_example_list_values"
-        android:key="example_list"
-        android:negativeButtonText="@null"
-        android:positiveButtonText="@null"
-        android:title="@string/pref_title_add_friends_to_messages" />
+        android:defaultValue="浅色"
+        android:entries="@array/themes"
+        android:entryValues="@array/themes"
+        android:key="theme"
+        android:title="主题" />
+    <ListPreference
+        android:defaultValue="旧金山"
+        android:entries="@array/cities"
+        android:entryValues="@array/cities"
+        android:key="city"
+        android:title="城市" />
+
+    <CheckBoxPreference
+        android:defaultValue="true"
+        android:key="notifbar"
+        android:title="显示状态栏" />
+    <CheckBoxPreference
+        android:defaultValue="false"
+        android:key="wallpaper"
+        android:title="将标题栏用作壁纸" />
+
+    <PreferenceScreen
+        android:orderingFromXml="true"
+        android:title="时钟和日期" >
+        <net.margaritov.preference.colorpicker.ColorPickerPreference
+            alphaSlider="true"
+            android:defaultValue="@color/dark"
+            android:key="colordawn"
+            android:title="黎明文本颜色" />
+        <net.margaritov.preference.colorpicker.ColorPickerPreference
+            alphaSlider="true"
+            android:defaultValue="@color/dark"
+            android:key="colordawn"
+            android:title="白天文本颜色" />
+        <net.margaritov.preference.colorpicker.ColorPickerPreference
+            alphaSlider="true"
+            android:defaultValue="@color/light"
+            android:key="colordusk"
+            android:title="黄昏文本颜色" />
+        <net.margaritov.preference.colorpicker.ColorPickerPreference
+            alphaSlider="true"
+            android:defaultValue="@color/light"
+            android:key="colornight"
+            android:title="夜晚文本颜色" />
+    </PreferenceScreen>
 
 </PreferenceScreen>
