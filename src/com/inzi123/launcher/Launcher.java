@@ -66,7 +66,7 @@ public class Launcher extends Activity {
 		favortieGvAdapter = new FavortieGvAdapter();
 
 		allAppGv.setAdapter(adapter);
-
+		allAppGv.setNumColumns(5);
 		allAppGv.setOnItemClickListener(appClickListener);
 
 		allAppGv.setOnItemLongClickListener(appItemLongClickListener);
@@ -110,8 +110,9 @@ public class Launcher extends Activity {
 			int count=dbHelper.delAppById(app.getId());
 			if(count>0){
 				loadFavoriteApp();
+				Log.d("ddv", "删除收藏");
 			}
-			return false;
+			return true;
 		}
 	};
 	
@@ -122,16 +123,14 @@ public class Launcher extends Activity {
 		public void onItemClick(AdapterView<?> arg0, View arg1, int arg2,
 				long arg3) {
 			ApplicationInfo ai = (ApplicationInfo) arg0.getItemAtPosition(arg2);
-			// ȡ������İ���
 			Intent i = pm.getLaunchIntentForPackage(ai
 					.getPackageName(ai.intent));
-			// ���ó��򲻿���������ϵͳ�Դ�İ��кܶ���û����ڵģ��᷵��NULL
-			String url = i.toUri(0);
-			try {
-				i = Intent.parseUri(url, 0);
-			} catch (URISyntaxException e) {
-				e.printStackTrace();
-			}
+//			String url = i.toUri(0);
+//			try {
+//				i = Intent.parseUri(url, 0);
+//			} catch (URISyntaxException e) {
+//				e.printStackTrace();
+//			}
 			if (i != null)
 				startActivity(i);
 
@@ -208,6 +207,7 @@ public class Launcher extends Activity {
 
 		favAppGv.setAdapter(favortieGvAdapter);
 		favortieGvAdapter.notifyDataSetChanged();
+		favAppGv.invalidate();
 	}
 
 	class AppAdapter extends BaseAdapter {
@@ -232,16 +232,20 @@ public class Launcher extends Activity {
 		public long getItemId(int arg0) {
 			return arg0;
 		}
-
+		TextView tv;
 		@Override
+		@SuppressWarnings("deprecation")
 		public View getView(int arg0, View cv, ViewGroup arg2) {
+			if(cv==null){
+				cv = li.inflate(R.layout.app_icon, null);
+				tv = (TextView) cv.findViewById(R.id.app_icon);
+				cv.setTag(tv);
+			}else{
+				tv=(TextView) cv.getTag();
+			}
 			ApplicationInfo ai = allAppList.get(arg0);
-			cv = li.inflate(R.layout.app_icon, null);
-			TextView tv = (TextView) cv.findViewById(R.id.app_icon);
-			@SuppressWarnings("deprecation")
 			BitmapDrawable drawable = new BitmapDrawable(
 					iconCache.getIcon(ai.intent));
-
 			drawable.setBounds(0, 0, 80, 80);
 			tv.setCompoundDrawables(null, drawable, null, null);
 			tv.setText(ai.resolveInfo.loadLabel(getPackageManager()));
@@ -272,13 +276,18 @@ public class Launcher extends Activity {
 		public long getItemId(int position) {
 			return position;
 		}
-
+		TextView tv;
 		@SuppressWarnings("deprecation")
 		@Override
 		public View getView(int position, View cv, ViewGroup parent) {
+			if(cv==null){
+				cv = li.inflate(R.layout.app_icon, null);
+				tv = (TextView) cv.findViewById(R.id.app_icon);
+				cv.setTag(tv);
+			}else{
+				tv=(TextView) cv.getTag();
+			}
 			FavoriteApp app = favoriteAppList.get(position);
-			cv = li.inflate(R.layout.app_icon, null);
-			TextView tv = (TextView) cv.findViewById(R.id.app_icon);
 			BitmapDrawable drawable = null;
 			try {
 				drawable = new BitmapDrawable(iconCache.getIcon(Intent
@@ -286,7 +295,6 @@ public class Launcher extends Activity {
 			} catch (URISyntaxException e) {
 				e.printStackTrace();
 			}
-
 			drawable.setBounds(0, 0, 80, 80);
 			tv.setCompoundDrawables(null, drawable, null, null);
 			tv.setText(app.getTitle());

@@ -78,9 +78,9 @@ public class DBHelper extends SQLiteOpenHelper {
 	public int delAppById(int id){
 		int count=0;
 		db=getWritableDatabase();
-		String sql="delete from favoriteapp where "+ID+"=?";
-		db.execSQL(sql, new Object[]{id});
-//		count=db.delete("favoriteapp", ID, new String[]{id+""});
+//		String sql="delete from favoriteapp where "+ID+"=?";
+//		db.execSQL(sql, new Object[]{id});
+		count=db.delete("favoriteapp", "_id=?", new String[]{id+""});
 		return count;
 	}
 
