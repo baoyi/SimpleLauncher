@@ -34,6 +34,9 @@ import com.inzi123.utils.Utils;
 import com.nizi123.launcher.R;
 
 public class Launcher extends Activity {
+	
+	public static final int APPGRIDEVIEW=1;
+	public static final int FAVORITEGRIDVIEW=2;
 
 	private GridView allAppGv;
 	private GridView favAppGv;
@@ -66,7 +69,6 @@ public class Launcher extends Activity {
 		favortieGvAdapter = new FavortieGvAdapter();
 
 		allAppGv.setAdapter(adapter);
-		allAppGv.setNumColumns(5);
 		allAppGv.setOnItemClickListener(appClickListener);
 
 		allAppGv.setOnItemLongClickListener(appItemLongClickListener);

@@ -4,7 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Build;
-import android.provider.Settings;
+import android.widget.GridView;
 import android.widget.Toast;
 
 public class Utils {
@@ -52,6 +52,10 @@ public class Utils {
 
 	public static void showMessage(Context context,String message){
 		Toast.makeText(context, message, Toast.LENGTH_SHORT).show();
+	}
+	
+	public static void loadGridViewSet(GridView gv,int type){
+		
 	}
 	
 }
