@@ -142,6 +142,8 @@ public class SeekBarPreference extends Preference implements
 	}
 
 	protected void onSetInitialValue(boolean paramBoolean, Object paramObject) {
+	      this.mCurrentValue = getPersistedInt(this.mCurrentValue);
+
 	}
 
 	public void onStartTrackingTouch(SeekBar paramSeekBar) {
