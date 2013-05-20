@@ -6,7 +6,10 @@ import java.util.HashMap;
 import java.util.List;
 
 import android.app.Activity;
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
@@ -52,7 +55,8 @@ public class Launcher extends Activity {
 	private DBHelper dbHelper;
 	private LayoutInflater li;
 	FavortieGvAdapter favortieGvAdapter;
-	LinearLayout	layout_weather ;
+	LinearLayout layout_weather;
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -64,7 +68,7 @@ public class Launcher extends Activity {
 
 		allAppGv = (GridView) findViewById(R.id.allAppGv);
 		favAppGv = (GridView) findViewById(R.id.favAppGv);
-		layout_weather=(LinearLayout) findViewById(R.id.layout_weather);
+		layout_weather = (LinearLayout) findViewById(R.id.layout_weather);
 		pm = getPackageManager();
 		loadApps();
 		AppAdapter adapter = new AppAdapter();
@@ -81,12 +85,41 @@ public class Launcher extends Activity {
 		favAppGv.setOnItemLongClickListener(favItemLongClickListener);
 		SettingsFragment f = new SettingsFragment();
 		f.getView();
-
-		SharedPreferences sp = getPreferences(MODE_PRIVATE);
+		SharedPreferences sp = getSharedPreferences(
+				"com.inzi123.launcher_preferences", Context.MODE_PRIVATE);
 		String imagekey = sp.getString("city", "奥斯汀");
 		layout_weather.setBackgroundResource(Datas.pics.get(imagekey));
-		
+
+
 	}
+
+	@Override
+	protected void onResume() {
+		// TODO Auto-generated method stub
+		super.onResume();
+		IntentFilter intentFilter = new IntentFilter();
+		intentFilter.addAction("com.change.image");
+		registerReceiver(receiver, intentFilter);
+	}
+
+	@Override
+	protected void onPause() {
+		// TODO Auto-generated method stub
+		super.onPause();
+		unregisterReceiver(receiver);
+	}
+
+	private BroadcastReceiver receiver = new BroadcastReceiver() {
+
+		@Override
+		public void onReceive(Context context, Intent intent) {
+			if (intent.getAction().equals("com.change.image")) {
+				String city = intent.getStringExtra("city");
+				layout_weather.setBackgroundResource(Datas.pics.get(city));
+			}
+		}
+	};
+		
 
 	private HashMap<String,Integer> appSetting=new HashMap<String, Integer>();
 	private HashMap<String,Integer> favSetting=new HashMap<String, Integer>();
