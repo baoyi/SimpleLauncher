@@ -1,16 +1,9 @@
 package com.inzi123.utils;
 
-import java.util.Iterator;
-import java.util.Map;
-import java.util.Map.Entry;
-import java.util.Set;
-
-import android.app.Activity;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 import android.preference.PreferenceManager;
-import android.util.Log;
 
 public class PreferenceUtils {
 	public static final String FAVCOLUMNS="favColumns";
