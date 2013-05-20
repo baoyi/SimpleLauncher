@@ -7,6 +7,7 @@ import java.util.List;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import android.graphics.drawable.BitmapDrawable;
@@ -22,10 +23,12 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.BaseAdapter;
 import android.widget.GridView;
+import android.widget.LinearLayout;
 import android.widget.PopupMenu;
 import android.widget.TextView;
 
 import com.inzi123.cache.IconCache;
+import com.inzi123.data.Datas;
 import com.inzi123.db.DBHelper;
 import com.inzi123.entity.ApplicationInfo;
 import com.inzi123.entity.FavoriteApp;
@@ -49,7 +52,7 @@ public class Launcher extends Activity {
 	private DBHelper dbHelper;
 	private LayoutInflater li;
 	FavortieGvAdapter favortieGvAdapter;
-
+	LinearLayout	layout_weather ;
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -61,6 +64,7 @@ public class Launcher extends Activity {
 
 		allAppGv = (GridView) findViewById(R.id.allAppGv);
 		favAppGv = (GridView) findViewById(R.id.favAppGv);
+		layout_weather=(LinearLayout) findViewById(R.id.layout_weather);
 		pm = getPackageManager();
 		loadApps();
 		AppAdapter adapter = new AppAdapter();
@@ -75,8 +79,12 @@ public class Launcher extends Activity {
 
 		favAppGv.setOnItemClickListener(favClickListener);
 		favAppGv.setOnItemLongClickListener(favItemLongClickListener);
-		SettingsFragment f=new SettingsFragment();
+		SettingsFragment f = new SettingsFragment();
 		f.getView();
+
+		SharedPreferences sp = getPreferences(MODE_PRIVATE);
+		String imagekey = sp.getString("city", "奥斯汀");
+		layout_weather.setBackgroundResource(Datas.pics.get(imagekey));
 	}
 
 	private HashMap<String,Integer> appSetting=new HashMap<String, Integer>();
@@ -131,22 +139,21 @@ public class Launcher extends Activity {
 			return false;
 		}
 	};
-	
-	private AdapterView.OnItemLongClickListener favItemLongClickListener=new AdapterView.OnItemLongClickListener() {
+
+	private AdapterView.OnItemLongClickListener favItemLongClickListener = new AdapterView.OnItemLongClickListener() {
 
 		@Override
 		public boolean onItemLongClick(AdapterView<?> parent, View view,
 				int position, long id) {
-			FavoriteApp app=(FavoriteApp) parent.getItemAtPosition(position);
-			int count=dbHelper.delAppById(app.getId());
-			if(count>0){
+			FavoriteApp app = (FavoriteApp) parent.getItemAtPosition(position);
+			int count = dbHelper.delAppById(app.getId());
+			if (count > 0) {
 				loadFavoriteApp();
 				Log.d("ddv", "删除收藏");
 			}
 			return true;
 		}
 	};
-	
 
 	private AdapterView.OnItemClickListener appClickListener = new AdapterView.OnItemClickListener() {
 
@@ -158,12 +165,12 @@ public class Launcher extends Activity {
 			Intent i = pm.getLaunchIntentForPackage(ai
 					.getPackageName(ai.intent));
 			// ���ó��򲻿���������ϵͳ�Դ�İ��кܶ���û����ڵģ��᷵��NULL
-//			String url = i.toUri(0);
-//			try {
-//				i = Intent.parseUri(url, 0);
-//			} catch (URISyntaxException e) {
-//				e.printStackTrace();
-//			}
+			// String url = i.toUri(0);
+			// try {
+			// i = Intent.parseUri(url, 0);
+			// } catch (URISyntaxException e) {
+			// e.printStackTrace();
+			// }
 			if (i != null)
 				startActivity(i);
 
@@ -192,7 +199,8 @@ public class Launcher extends Activity {
 			public boolean onMenuItemClick(MenuItem item) {
 				switch (item.getItemId()) {
 				case 0: {
-					Utils.showInstalledAppDetails(Launcher.this, ai.getPackageName(ai.intent));
+					Utils.showInstalledAppDetails(Launcher.this,
+							ai.getPackageName(ai.intent));
 					menu.dismiss();
 					break;
 				}
@@ -221,7 +229,6 @@ public class Launcher extends Activity {
 
 	}
 
-	
 	private void loadApps() {
 
 		Intent mainIntent = new Intent(Intent.ACTION_MAIN, null);
@@ -264,16 +271,18 @@ public class Launcher extends Activity {
 		public long getItemId(int arg0) {
 			return arg0;
 		}
+
 		TextView tv;
+
 		@Override
 		@SuppressWarnings("deprecation")
 		public View getView(int arg0, View cv, ViewGroup arg2) {
-			if(cv==null){
+			if (cv == null) {
 				cv = li.inflate(R.layout.app_icon, null);
 				tv = (TextView) cv.findViewById(R.id.app_icon);
 				cv.setTag(tv);
-			}else{
-				tv=(TextView) cv.getTag();
+			} else {
+				tv = (TextView) cv.getTag();
 			}
 			ApplicationInfo ai = allAppList.get(arg0);
 			BitmapDrawable drawable = new BitmapDrawable(
@@ -308,16 +317,18 @@ public class Launcher extends Activity {
 		public long getItemId(int position) {
 			return position;
 		}
+
 		TextView tv;
+
 		@SuppressWarnings("deprecation")
 		@Override
 		public View getView(int position, View cv, ViewGroup parent) {
-			if(cv==null){
+			if (cv == null) {
 				cv = li.inflate(R.layout.app_icon, null);
 				tv = (TextView) cv.findViewById(R.id.app_icon);
 				cv.setTag(tv);
-			}else{
-				tv=(TextView) cv.getTag();
+			} else {
+				tv = (TextView) cv.getTag();
 			}
 			FavoriteApp app = favoriteAppList.get(position);
 			BitmapDrawable drawable = null;

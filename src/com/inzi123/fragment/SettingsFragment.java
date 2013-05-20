@@ -21,7 +21,7 @@ public class SettingsFragment extends PreferenceFragment {
 					public boolean onPreferenceChange(Preference arg0,
 							Object arg1) {
 						Log.i("ada", "" + arg1);
-						return false;
+						return true;
 					}
 				});
 	}
