@@ -11,9 +11,7 @@ import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import android.graphics.drawable.BitmapDrawable;
 import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
-import android.provider.Settings;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -30,6 +28,7 @@ import com.inzi123.cache.IconCache;
 import com.inzi123.db.DBHelper;
 import com.inzi123.entity.ApplicationInfo;
 import com.inzi123.entity.FavoriteApp;
+import com.inzi123.manager.SettingManager;
 import com.inzi123.utils.Utils;
 import com.nizi123.launcher.R;
 
@@ -76,6 +75,8 @@ public class Launcher extends Activity {
 
 		favAppGv.setOnItemClickListener(favClickListener);
 		favAppGv.setOnItemLongClickListener(favItemLongClickListener);
+		SettingManager settingManager=new SettingManager();
+		settingManager.init(this);
 	}
 
 	private AdapterView.OnItemClickListener favClickListener = new AdapterView.OnItemClickListener() {
