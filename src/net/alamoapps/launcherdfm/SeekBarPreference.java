@@ -33,6 +33,7 @@ public class SeekBarPreference extends Preference implements
 	private boolean show = true;
 	protected View v;
 
+
 	public SeekBarPreference(Context paramContext,
 			AttributeSet paramAttributeSet) {
 		super(paramContext, paramAttributeSet);
@@ -129,12 +130,15 @@ public class SeekBarPreference extends Preference implements
 
 	public void onProgressChanged(SeekBar paramSeekBar, int paramInt,
 			boolean paramBoolean) {
-	    int i = paramInt + this.mMinValue;
-	    if (i > this.mMaxValue)
-	      i = this.mMaxValue;
-	      paramSeekBar.setProgress(this.mCurrentValue - this.mMinValue);
-	    this.mCurrentValue = i;
-	    this.mStatusText.setText(String.valueOf(i));
+		int i = paramInt + this.mMinValue;
+		if (i > this.mMaxValue)
+			i = this.mMaxValue;
+		paramSeekBar.setProgress(this.mCurrentValue - this.mMinValue);
+		this.mCurrentValue = i;
+		this.mStatusText.setText(String.valueOf(i));
+	      persistInt(i);
+	     
+
 	}
 
 	protected void onSetInitialValue(boolean paramBoolean, Object paramObject) {
