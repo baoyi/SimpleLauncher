@@ -30,10 +30,13 @@
             android:layout_height="fill_parent"
             android:layout_weight="1" >
 
-            <include
-                android:layout_width="fill_parent"
-                android:layout_height="fill_parent"
-                layout="@layout/setting" />
+            
+            
+            <fragment
+                android:id="@+id/header"
+                android:name="com.inzi123.fragment.SettingsFragment"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" />
 
             <GridView
                 android:id="@+id/favAppGv"

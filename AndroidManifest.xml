@@ -57,7 +57,7 @@
             <!--
           		<intent-filter>
 				<action android:name="com.baidu.location.service_v2.9"></action>
-			</intent-filter>
+			</intent-filter>
             -->
         </service>
 
