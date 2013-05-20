@@ -1,13 +1,19 @@
 package net.alamoapps.launcherdfm;
 
+import com.nizi123.launcher.R;
+
 import android.content.Context;
+import android.content.res.TypedArray;
 import android.preference.Preference;
 import android.util.AttributeSet;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewParent;
+import android.widget.RelativeLayout;
 import android.widget.SeekBar;
+import android.widget.SeekBar.OnSeekBarChangeListener;
 import android.widget.TextView;
 
 public class SeekBarPreference extends Preference implements
@@ -50,8 +56,35 @@ public class SeekBarPreference extends Preference implements
 
 	private void initPreference(Context paramContext,
 			AttributeSet paramAttributeSet) {
+		setValuesFromXml(paramAttributeSet);
 		this.mSeekBar = new SeekBar(paramContext, paramAttributeSet);
+		this.mSeekBar.setMax(this.mMaxValue - this.mMinValue);
 		this.mSeekBar.setOnSeekBarChangeListener(this);
+	}
+
+	private void setValuesFromXml(AttributeSet paramAttributeSet) {
+		this.mMaxValue = paramAttributeSet.getAttributeIntValue(
+				"http://schemas.android.com/apk/res/android", "max", 100);
+		this.mMinValue = paramAttributeSet.getAttributeIntValue(
+				"http://robobunny.com", "min", 0);
+		this.mUnitsLeft = getAttributeStringValue(paramAttributeSet,
+				"http://robobunny.com", "unitsLeft", "");
+		this.mUnitsRight = getAttributeStringValue(
+				paramAttributeSet,
+				"http://robobunny.com",
+				"unitsRight",
+				getAttributeStringValue(paramAttributeSet,
+						"http://robobunny.com", "units", ""));
+		try {
+			String str = paramAttributeSet.getAttributeValue(
+					"http://robobunny.com", "interval");
+			if (str != null)
+				this.mInterval = Integer.parseInt(str);
+			return;
+		} catch (Exception localException) {
+			while (true)
+				Log.e(this.TAG, "Invalid interval value", localException);
+		}
 	}
 
 	public void onBindView(View paramView) {
@@ -59,13 +92,14 @@ public class SeekBarPreference extends Preference implements
 		try {
 			ViewParent localViewParent = this.mSeekBar.getParent();
 			ViewGroup localViewGroup = (ViewGroup) paramView
-					.findViewById(2131427353);
+					.findViewById(R.id.seekBarPrefBarContainer);
 			if (localViewParent != localViewGroup) {
 				if (localViewParent != null)
 					((ViewGroup) localViewParent).removeView(this.mSeekBar);
 				localViewGroup.removeAllViews();
 				localViewGroup.addView(this.mSeekBar, -1, -2);
 			}
+			updateView(paramView);
 			return;
 		} catch (Exception localException) {
 			while (true)
@@ -74,20 +108,59 @@ public class SeekBarPreference extends Preference implements
 		}
 	}
 
-	@Override
-	public void onProgressChanged(SeekBar arg0, int arg1, boolean arg2) {
-
+	protected View onCreateView(ViewGroup paramViewGroup) {
+		RelativeLayout localRelativeLayout = null;
+		try {
+			localRelativeLayout = (RelativeLayout) ((LayoutInflater) getContext()
+					.getSystemService("layout_inflater")).inflate(
+					R.layout.seek_bar_preference, paramViewGroup, false);
+			this.v = localRelativeLayout;
+			return localRelativeLayout;
+		} catch (Exception localException) {
+			while (true)
+				Log.e(this.TAG, "Error creating seek bar preference",
+						localException);
+		}
 	}
 
-	@Override
-	public void onStartTrackingTouch(SeekBar arg0) {
-
+	protected Object onGetDefaultValue(TypedArray paramTypedArray, int paramInt) {
+		return Integer.valueOf(paramTypedArray.getInt(paramInt, 50));
 	}
 
-	@Override
-	public void onStopTrackingTouch(SeekBar arg0) {
-		// TODO Auto-generated method stub
-
+	public void onProgressChanged(SeekBar paramSeekBar, int paramInt,
+			boolean paramBoolean) {
 	}
 
+	protected void onSetInitialValue(boolean paramBoolean, Object paramObject) {
+	}
+
+	public void onStartTrackingTouch(SeekBar paramSeekBar) {
+	}
+
+	public void onStopTrackingTouch(SeekBar paramSeekBar) {
+		notifyChanged();
+	}
+
+	public void setShowValue(boolean paramBoolean) {
+		this.show = paramBoolean;
+	}
+
+	protected void updateView(View paramView) {
+		try {
+			RelativeLayout localRelativeLayout = (RelativeLayout) paramView;
+			this.mStatusText = ((TextView) localRelativeLayout
+					.findViewById(R.id.seekBarPrefValue));
+			this.mStatusText.setText(String.valueOf(this.mCurrentValue));
+			this.mStatusText.setMinimumWidth(30);
+			this.mSeekBar.setProgress(this.mCurrentValue - this.mMinValue);
+		} catch (Exception localException) {
+			Log.e(this.TAG, "Error updating seek bar preference",
+					localException);
+		}
+	}
 }
+
+/*
+ * Location: D:\tool\dex2jar\sf_dex2jar.jar Qualified Name:
+ * net.alamoapps.launcherdfm.SeekBarPreference JD-Core Version: 0.6.2
+ */
