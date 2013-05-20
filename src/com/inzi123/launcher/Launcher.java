@@ -2,6 +2,7 @@ package com.inzi123.launcher;
 
 import java.net.URISyntaxException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import android.app.Activity;
@@ -14,6 +15,7 @@ import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import android.graphics.drawable.BitmapDrawable;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -34,8 +36,9 @@ import com.inzi123.db.DBHelper;
 import com.inzi123.entity.ApplicationInfo;
 import com.inzi123.entity.FavoriteApp;
 import com.inzi123.fragment.SettingsFragment;
+import com.inzi123.utils.PreferenceUtils;
 import com.inzi123.utils.Utils;
-import com.nizi123.launcher.R;
+import com.inzi123.launcher.R;
 
 public class Launcher extends Activity {
 
@@ -86,6 +89,8 @@ public class Launcher extends Activity {
 				"com.inzi123.launcher_preferences", Context.MODE_PRIVATE);
 		String imagekey = sp.getString("city", "奥斯汀");
 		layout_weather.setBackgroundResource(Datas.pics.get(imagekey));
+		Log.i("ddv", PreferenceUtils.getIntValue(this, PreferenceUtils.ALLCOLUMNS)+"*******");
+
 
 	}
 
@@ -115,6 +120,36 @@ public class Launcher extends Activity {
 			}
 		}
 	};
+		
+
+	private HashMap<String,Integer> appSetting=new HashMap<String, Integer>();
+	private HashMap<String,Integer> favSetting=new HashMap<String, Integer>();
+	
+	private void loadAppSet(){
+		appSetting.put(PreferenceUtils.ALLCOLUMNS, PreferenceUtils.getIntValue(this, PreferenceUtils.ALLCOLUMNS));
+		appSetting.put(PreferenceUtils.ALLSIZE, PreferenceUtils.getIntValue(this, PreferenceUtils.ALLSIZE));
+		appSetting.put(PreferenceUtils.ALLLINES, PreferenceUtils.getIntValue(this, PreferenceUtils.ALLLINES));
+		appSetting.put(PreferenceUtils.ALLTEXT, PreferenceUtils.getIntValue(this, PreferenceUtils.ALLTEXT));
+	}
+	
+	private void loadFavSet(){
+		favSetting.put(PreferenceUtils.FAVCOLUMNS, PreferenceUtils.getIntValue(this, PreferenceUtils.FAVCOLUMNS));
+		favSetting.put(PreferenceUtils.FAVSIZE, PreferenceUtils.getIntValue(this, PreferenceUtils.FAVSIZE));
+		favSetting.put(PreferenceUtils.FAVLINES, PreferenceUtils.getIntValue(this, PreferenceUtils.FAVLINES));
+		favSetting.put(PreferenceUtils.FAVTEXT, PreferenceUtils.getIntValue(this, PreferenceUtils.FAVTEXT));
+	}
+	
+	class AsyncLoadSet extends AsyncTask<Void,Void,Void>{
+
+		@Override
+		protected Void doInBackground(Void... params) {
+			loadAppSet();
+			loadFavSet();
+			return null;
+		}
+
+	} 
+	
 	private AdapterView.OnItemClickListener favClickListener = new AdapterView.OnItemClickListener() {
 
 		@Override

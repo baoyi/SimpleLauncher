@@ -8,7 +8,7 @@ import android.preference.Preference.OnPreferenceChangeListener;
 import android.preference.PreferenceFragment;
 import android.util.Log;
 
-import com.nizi123.launcher.R;
+import com.inzi123.launcher.R;
 
 public class SettingsFragment extends PreferenceFragment {
 	@Override
@@ -24,7 +24,8 @@ public class SettingsFragment extends PreferenceFragment {
 							Object arg1) {
 						Log.i("ada", "" + arg1);
 						
-						Intent intent = new Intent();
+						Intent intent = new Intent("com.change.image");
+						intent.putExtra("city", arg1.toString());
                         getActivity().sendBroadcast(intent);
 						return true;
 					}

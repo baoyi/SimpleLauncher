@@ -1,6 +1,6 @@
 package net.alamoapps.launcherdfm;
 
-import com.nizi123.launcher.R;
+import com.inzi123.launcher.R;
 
 import android.content.Context;
 import android.content.res.TypedArray;

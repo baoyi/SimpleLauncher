@@ -251,6 +251,7 @@
             android:summary="使用 ADW、Launcher Pro 或 Apex 图标包"
             android:title="图标包" />
     </PreferenceScreen>
+   
     <PreferenceScreen
         android:summary="主页：http://www.anzhi.com\n论坛：http://bbs.anzhi.com"
         android:title="安智汉化组 小手汉化" >

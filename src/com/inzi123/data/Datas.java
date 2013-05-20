@@ -2,7 +2,7 @@ package com.inzi123.data;
 
 import java.util.HashMap;
 
-import com.nizi123.launcher.R;
+import com.inzi123.launcher.R;
 
 public class Datas {
 
