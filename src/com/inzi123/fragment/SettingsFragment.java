@@ -6,7 +6,7 @@ import android.preference.Preference.OnPreferenceChangeListener;
 import android.preference.PreferenceFragment;
 import android.util.Log;
 
-import com.nizi123.launcher.R;
+import com.inzi123.launcher.R;
 
 public class SettingsFragment extends PreferenceFragment {
 	@Override

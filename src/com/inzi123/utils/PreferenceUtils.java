@@ -1,9 +1,16 @@
 package com.inzi123.utils;
 
+import java.util.Iterator;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Set;
+
 import android.app.Activity;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
+import android.preference.PreferenceManager;
+import android.util.Log;
 
 public class PreferenceUtils {
 	public static final String FAVCOLUMNS="favColumns";
@@ -20,16 +27,16 @@ public class PreferenceUtils {
 	}
 	
 	
-	public static void setIntValue(Activity activity,String key,int value){
-		SharedPreferences sp=activity.getPreferences(Context.MODE_PRIVATE);
+	public static void setIntValue(Context context,String key,int value){
+		SharedPreferences sp=PreferenceManager.getDefaultSharedPreferences(context);
 		Editor editor=sp.edit();
 		editor.putInt(key, value);
 		editor.commit();
 	}
 	
-	public static int getIntValue(Activity activity,String key){
+	public static int getIntValue(Context context,String key){
 		int value=-1;
-		SharedPreferences sp=activity.getPreferences(Context.MODE_PRIVATE);
+		SharedPreferences sp=PreferenceManager.getDefaultSharedPreferences(context);
 		value=sp.getInt(key, -1);
 		return value;
 	}

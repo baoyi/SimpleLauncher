@@ -35,7 +35,7 @@ import com.inzi123.entity.FavoriteApp;
 import com.inzi123.fragment.SettingsFragment;
 import com.inzi123.utils.PreferenceUtils;
 import com.inzi123.utils.Utils;
-import com.nizi123.launcher.R;
+import com.inzi123.launcher.R;
 
 public class Launcher extends Activity {
 
@@ -85,6 +85,8 @@ public class Launcher extends Activity {
 		SharedPreferences sp = getPreferences(MODE_PRIVATE);
 		String imagekey = sp.getString("city", "奥斯汀");
 		layout_weather.setBackgroundResource(Datas.pics.get(imagekey));
+		
+		Log.i("ddv", PreferenceUtils.getIntValue(this, PreferenceUtils.ALLCOLUMNS)+"*******");
 	}
 
 	private HashMap<String,Integer> appSetting=new HashMap<String, Integer>();
