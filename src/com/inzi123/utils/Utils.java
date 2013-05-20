@@ -28,10 +28,14 @@ public class Utils {
 
 	public static void showInstalledAppDetails(Context context,
 			String packageName) {
+		
+		
+//		   Intent localIntent = new Intent("android.settings.APPLICATION_DETAILS_SETTINGS", Uri.fromParts("package", ((ResolveInfo)AppsFragment.this.ress.get(paramAnonymousInt)).activityInfo.packageName, null));
+//           localIntent.setFlags(276824064);
 		Intent intent = new Intent();
 		final int apiLevel = Build.VERSION.SDK_INT;
 		if (apiLevel >= 9) { // 2.3（ApiLevel 9）以上，使用SDK提供的接口
-			intent.setAction(Settings.ACTION_APPLICATION_SETTINGS);
+			intent.setAction("android.settings.APPLICATION_DETAILS_SETTINGS");
 			Uri uri = Uri.fromParts(SCHEME, packageName, null);
 			intent.setData(uri);
 		} else { // 2.3以下，使用非公开的接口（查看InstalledAppDetails源码）
