@@ -1,5 +1,7 @@
 package com.inzi123.fragment;
 
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Bundle;
 import android.preference.Preference;
 import android.preference.Preference.OnPreferenceChangeListener;
@@ -13,7 +15,7 @@ public class SettingsFragment extends PreferenceFragment {
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		// Load the preferences from an XML resource
-		addPreferencesFromResource(R.xml.preferences_plus);
+		addPreferencesFromResource(R.xml.a);
 		findPreference("city").setOnPreferenceChangeListener(
 				new OnPreferenceChangeListener() {
 
@@ -21,6 +23,9 @@ public class SettingsFragment extends PreferenceFragment {
 					public boolean onPreferenceChange(Preference arg0,
 							Object arg1) {
 						Log.i("ada", "" + arg1);
+						
+						Intent intent = new Intent();
+                        getActivity().sendBroadcast(intent);
 						return true;
 					}
 				});
