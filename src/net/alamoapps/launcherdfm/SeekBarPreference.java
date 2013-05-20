@@ -129,6 +129,12 @@ public class SeekBarPreference extends Preference implements
 
 	public void onProgressChanged(SeekBar paramSeekBar, int paramInt,
 			boolean paramBoolean) {
+	    int i = paramInt + this.mMinValue;
+	    if (i > this.mMaxValue)
+	      i = this.mMaxValue;
+	      paramSeekBar.setProgress(this.mCurrentValue - this.mMinValue);
+	    this.mCurrentValue = i;
+	    this.mStatusText.setText(String.valueOf(i));
 	}
 
 	protected void onSetInitialValue(boolean paramBoolean, Object paramObject) {
