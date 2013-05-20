@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen
+  xmlns:android="http://schemas.android.com/apk/res/android" xmlns:robobunny="http://robobunny.com">
+    <PreferenceScreen android:title="标题栏和主题" android:orderingFromXml="true">
+        <ListPreference android:entries="@array/cities" android:title="城市" android:key="city" android:defaultValue="旧金山" android:entryValues="@array/cities" />
+        <ListPreference android:entries="@array/themes" android:title="主题" android:key="theme" android:defaultValue="浅色" android:entryValues="@array/themes" />
+        <CheckBoxPreference android:title="显示状态栏" android:key="notifbar" android:defaultValue="true" />
+        <CheckBoxPreference android:title="将标题栏用作壁纸" android:key="wallpaper" android:defaultValue="false" />
+        <PreferenceScreen android:title="时钟和日期" android:orderingFromXml="true">
+            <net.margaritov.preference.colorpicker.ColorPickerPreference android:title="黎明文本颜色" android:key="colordawn" android:defaultValue="@color/dark" alphaSlider="true" />
+            <net.margaritov.preference.colorpicker.ColorPickerPreference android:title="白天文本颜色" android:key="colordawn" android:defaultValue="@color/dark" alphaSlider="true" />
+            <net.margaritov.preference.colorpicker.ColorPickerPreference android:title="黄昏文本颜色" android:key="colordusk" android:defaultValue="@color/light" alphaSlider="true" />
+            <net.margaritov.preference.colorpicker.ColorPickerPreference android:title="夜晚文本颜色" android:key="colornight" android:defaultValue="@color/light" alphaSlider="true" />
+            <net.alamoapps.launcherdfm.SeekBarPreference android:max="@integer/clockmax" android:title="时钟文本大小" android:key="clockSize" android:summary=" " android:defaultValue="52" robobunny:min="@integer/clockmin" robobunny:unitsLeft="" robobunny:unitsRight=" sp" />
+            <net.alamoapps.launcherdfm.SeekBarPreference android:max="@integer/datemax" android:title="日期文本大小" android:key="dateSize" android:summary=" " android:defaultValue="16" robobunny:min="@integer/datemin" robobunny:unitsLeft="" robobunny:unitsRight=" sp" />
+        </PreferenceScreen>
+        <PreferenceScreen android:title="操作" android:orderingFromXml="true">
+            <ListPreference android:entries="@array/actions" android:title="标题栏触摸操作" android:key="headerTap" android:defaultValue="Search" android:entryValues="@array/actions" />
+            <ListPreference android:entries="@array/actions" android:title="标题栏触摸并按住操作" android:key="headerLong" android:defaultValue="None" android:entryValues="@array/actions" />
+            <ListPreference android:entries="@array/actions" android:title="时钟触摸操作" android:key="clockTap" android:defaultValue="Clock" android:entryValues="@array/actions" />
+            <ListPreference android:entries="@array/actions" android:title="时钟触摸并按住操作" android:key="clockLong" android:defaultValue="None" android:entryValues="@array/actions" />
+            <ListPreference android:entries="@array/actions" android:title="日期触摸操作" android:key="dateTap" android:defaultValue="Clock" android:entryValues="@array/actions" />
+            <ListPreference android:entries="@array/actions" android:title="日期触摸并按住操作" android:key="dateLong" android:defaultValue="None" android:entryValues="@array/actions" />
+        </PreferenceScreen>
+        <PreferenceScreen android:title="起始时间" android:orderingFromXml="true">
+            <net.alamoapps.launcherdfm.TimePreference android:max="9" android:title="黎明起始时间" android:key="dawnStart" android:summary=" " android:defaultValue="6" robobunny:min="3" robobunny:unitsLeft="" robobunny:unitsRight="" />
+            <net.alamoapps.launcherdfm.TimePreference android:max="11" android:title="白天起始时间" android:key="dayStart" android:summary=" " android:defaultValue="8" robobunny:min="5" robobunny:unitsLeft="" robobunny:unitsRight="" />
+            <net.alamoapps.launcherdfm.TimePreference android:max="21" android:title="黄昏起始时间" android:key="duskStart" android:summary=" " android:defaultValue="18" robobunny:min="15" robobunny:unitsLeft="" robobunny:unitsRight="" />
+            <net.alamoapps.launcherdfm.TimePreference android:max="23" android:title="夜晚起始时间" android:key="nightStart" android:summary=" " android:defaultValue="20" robobunny:min="17" robobunny:unitsLeft="" robobunny:unitsRight="" />
+        </PreferenceScreen>
+    </PreferenceScreen>
+    <PreferenceScreen android:title="小部件">
+        <net.alamoapps.launcherdfm.SeekBarPreference android:max="500" android:title="面板高度" android:key="widgetHeight" android:summary=" " android:defaultValue="200" robobunny:interval="5" robobunny:min="50" robobunny:unitsLeft="" robobunny:unitsRight=" dp" />
+    </PreferenceScreen>
+    <PreferenceScreen android:title="收藏">
+        <net.alamoapps.launcherdfm.SeekBarPreference android:max="15" android:title="图标列数" android:key="favColumns" android:summary=" " android:defaultValue="6" robobunny:min="1" robobunny:unitsLeft="" robobunny:unitsRight=" 列" />
+        <net.alamoapps.launcherdfm.SeekBarPreference android:max="72" android:title="图标大小" android:key="favSize" android:summary=" " android:defaultValue="36" robobunny:min="8" robobunny:unitsLeft="" robobunny:unitsRight=" dp" />
+        <net.alamoapps.launcherdfm.SeekBarPreference android:max="5" android:title="标签行数" android:key="favLines" android:summary="0 代表不显示标签" android:defaultValue="0" robobunny:min="0" robobunny:unitsLeft="" robobunny:unitsRight=" 行" />
+        <net.alamoapps.launcherdfm.SeekBarPreference android:max="36" android:title="文本大小" android:key="favText" android:summary=" " android:defaultValue="6" robobunny:min="4" robobunny:unitsLeft="" robobunny:unitsRight=" sp" />
+        <net.alamoapps.launcherdfm.IconPreference android:title="图标包" android:key="favPack" android:summary="使用 ADW、Launcher Pro 或 Apex 图标包" android:defaultValue="默认" />
+    </PreferenceScreen>
+    <PreferenceScreen android:title="应用列表">
+        <net.alamoapps.launcherdfm.SeekBarPreference android:max="15" android:title="图标列数" android:key="allColumns" android:summary=" " android:defaultValue="5" robobunny:min="1" robobunny:unitsLeft="" robobunny:unitsRight=" 列" />
+        <net.alamoapps.launcherdfm.SeekBarPreference android:max="72" android:title="图标大小" android:key="allSize" android:summary=" " android:defaultValue="36" robobunny:min="8" robobunny:unitsLeft="" robobunny:unitsRight=" dp" />
+        <net.alamoapps.launcherdfm.SeekBarPreference android:max="5" android:title="标签行数" android:key="allLines" android:summary="0 代表不显示标签" android:defaultValue="2" robobunny:min="0" robobunny:unitsLeft="" robobunny:unitsRight=" 行" />
+        <net.alamoapps.launcherdfm.SeekBarPreference android:max="36" android:title="文本大小" android:key="allText" android:summary=" " android:defaultValue="10" robobunny:min="4" robobunny:unitsLeft="" robobunny:unitsRight=" sp" />
+        <net.alamoapps.launcherdfm.IconPreference android:title="图标包" android:key="allPack" android:summary="使用 ADW、Launcher Pro 或 Apex 图标包" android:defaultValue="Default" />
+    </PreferenceScreen>
+    <PreferenceScreen android:title="安智汉化组 小手汉化" android:summary="主页：http://www.anzhi.com\n论坛：http://bbs.anzhi.com">
+        <intent android:action="android.intent.action.VIEW" android:data="http://bbs.anzhi.com" />
+    </PreferenceScreen>
+</PreferenceScreen>

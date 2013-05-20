@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">SF 启动器</string>
+    <string name="dialog_color_picker">取色器</string>
+    <string name="press_color_to_apply">触摸颜色可应用</string>
+    <string name="pref_category">分类</string>
+    <string name="color1_title">颜色 1</string>
+    <string name="color1_summary">默认黑色，由参考设置</string>
+    <string name="color2_title">颜色 2</string>
+    <string name="color2_summary">"非固定颜色
+已通过代码添加不透明度滑块"</string>
+    <string name="color3_title">颜色 3</string>
+    <string name="color3_summary">带不透明度滑块的取色器</string>
+    <string name="color4_title">颜色 4</string>
+    <string name="color4_summary">已通过 xml 中的 16 进制代码设置颜色</string>
+    <string name="title_section3">第 3 部分</string>
+    <string name="title_section2">第 2 部分</string>
+    <string name="title_section1">第 1 部分</string>
+    <string name="menu_settings">设置</string>
+    <string name="permlab_install_shortcut">安装快捷方式</string>
+    <string name="permdesc_install_shortcut">允许应用自行添加快捷方式。</string>
+    <string name="permlab_uninstall_shortcut">卸载快捷方式</string>
+    <string name="permdesc_uninstall_shortcut">允许应用自行删除快捷方式，而无需用户干预。</string>
+    <string name="permlab_read_settings">读取主屏幕的设置和快捷方式</string>
+    <string name="permdesc_read_settings">允许应用读取主屏幕中的设置和快捷方式。</string>
+    <string name="permlab_write_settings">写入主屏幕的设置和快捷方式</string>
+    <string name="permdesc_write_settings">允许应用更改主屏幕中的设置和快捷方式。</string>
+</resources>
