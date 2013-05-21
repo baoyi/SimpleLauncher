@@ -191,6 +191,11 @@ public class ScrollLayout extends ViewGroup {
 			scrollBy(deltaX, 0);
 			break;
 		case MotionEvent.ACTION_UP:
+			if(mCurScreen==1){
+				if(y<100){
+					return false;
+				}
+			}
 			//Log.e(TAG, "event : up");
 			// if (mTouchState == TOUCH_STATE_SCROLLING) {
 			final VelocityTracker velocityTracker = mVelocityTracker;
@@ -235,6 +240,11 @@ public class ScrollLayout extends ViewGroup {
 		final float y = ev.getY();
 		switch (action) {
 		case MotionEvent.ACTION_MOVE:
+			if(mCurScreen==1){
+				if(y<100){
+					return false;
+				}
+			}
 			final int xDiff = (int) Math.abs(mLastMotionX - x);
 			if (xDiff > mTouchSlop) {
 				mTouchState = TOUCH_STATE_SCROLLING;
