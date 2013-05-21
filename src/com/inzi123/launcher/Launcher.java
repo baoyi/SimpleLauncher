@@ -55,9 +55,10 @@ public class Launcher extends Activity {
 	private DBHelper dbHelper;
 	private LayoutInflater li;
 	FavortieGvAdapter favortieGvAdapter;
-	LinearLayout layout_weather;
+	View layout_weather;
 	private float scale;
 	private AppAdapter appAdapter;
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -69,10 +70,11 @@ public class Launcher extends Activity {
 		dbHelper = new DBHelper(this);
 		allAppGv = (GridView) findViewById(R.id.allAppGv);
 		favAppGv = (GridView) findViewById(R.id.favAppGv);
-		layout_weather = (LinearLayout) findViewById(R.id.layout_weather);
+		weathtext = (TextView) findViewById(R.id.weathtext);
+		layout_weather = findViewById(R.id.layout_weather);
 		pm = getPackageManager();
 		loadApps();
-		 appAdapter = new AppAdapter();
+		appAdapter = new AppAdapter();
 		favortieGvAdapter = new FavortieGvAdapter();
 
 		allAppGv.setAdapter(appAdapter);
@@ -88,25 +90,32 @@ public class Launcher extends Activity {
 		f.getView();
 		SharedPreferences sp = getSharedPreferences(
 				"com.inzi123.launcher_preferences", Context.MODE_PRIVATE);
-		 city = sp.getString("city", "奥斯汀");
+		city = sp.getString("city", "奥斯汀");
 		layout_weather.setBackgroundResource(Datas.daypics.get(city));
 		flushAppGv();
 		flushFavGv();
-		
-		Intent alert=new Intent(this, AlertService.class);
+
+		Intent alert = new Intent(this, AlertService.class);
 		startService(alert);
 	}
+
 	String city;
+
 	@Override
 	protected void onResume() {
 		super.onResume();
 		IntentFilter intentFilter = new IntentFilter();
 		intentFilter.addAction("com.change.image");
 		registerReceiver(receiver, intentFilter);
-		
+
 		IntentFilter timeFilter = new IntentFilter();
 		timeFilter.addAction("com.update.time");
 		registerReceiver(timereceiver, timeFilter);
+		
+		IntentFilter weatherFilter = new IntentFilter();
+		timeFilter.addAction("com.change.weather");
+		registerReceiver(weatherreceiver, weatherFilter);
+		
 	}
 
 	@Override
@@ -114,18 +123,33 @@ public class Launcher extends Activity {
 		super.onPause();
 		unregisterReceiver(receiver);
 		unregisterReceiver(timereceiver);
+		unregisterReceiver(weatherreceiver);
+
+		
 	}
+
+	public TextView weathtext;
 	private BroadcastReceiver receiver = new BroadcastReceiver() {
 
 		@Override
 		public void onReceive(Context context, Intent intent) {
 			if (intent.getAction().equals("com.change.image")) {
-				 city = intent.getStringExtra("city");
+				city = intent.getStringExtra("city");
 				layout_weather.setBackgroundResource(Datas.dawnpics.get(city));
 			}
 		}
 	};
+	private String weather;
+	private BroadcastReceiver weatherreceiver = new BroadcastReceiver() {
 
+		@Override
+		public void onReceive(Context context, Intent intent) {
+			if (intent.getAction().equals("com.change.weather")) {
+				weather = intent.getStringExtra("weather");
+				weathtext.setText(weather);
+			}
+		}
+	};
 	private BroadcastReceiver timereceiver = new BroadcastReceiver() {
 
 		@Override
@@ -133,24 +157,27 @@ public class Launcher extends Activity {
 			if (intent.getAction().equals("com.update.time")) {
 				Log.i("ada", "更新时间");
 				Calendar calendar = Calendar.getInstance();
-				int hour=calendar.get(Calendar.HOUR_OF_DAY);
-				hour=hour/6;
-				if(hour==0){
-					layout_weather.setBackgroundResource(Datas.dawnpics.get(city));
+				int hour = calendar.get(Calendar.HOUR_OF_DAY);
+				hour = hour / 6;
+				if (hour == 0) {
+					layout_weather.setBackgroundResource(Datas.dawnpics
+							.get(city));
 				}
-				if(hour==1){
-					layout_weather.setBackgroundResource(Datas.duskpics.get(city));
+				if (hour == 1) {
+					layout_weather.setBackgroundResource(Datas.duskpics
+							.get(city));
 				}
-				if(hour==2){
-					layout_weather.setBackgroundResource(Datas.daypics.get(city));
+				if (hour == 2) {
+					layout_weather.setBackgroundResource(Datas.daypics
+							.get(city));
 				}
-				if(hour==3){
-					layout_weather.setBackgroundResource(Datas.nightpics.get(city));
+				if (hour == 3) {
+					layout_weather.setBackgroundResource(Datas.nightpics
+							.get(city));
 				}
 			}
 		}
 	};
-
 
 	private HashMap<String, Integer> appSetting = new HashMap<String, Integer>();
 	private HashMap<String, Integer> favSetting = new HashMap<String, Integer>();
@@ -180,45 +207,49 @@ public class Launcher extends Activity {
 	private boolean appTextShow = true;
 	private int appTextSize = 4;
 	private int appIconSize = 8;
-	private int favIconSize=4;
-	private boolean favTextShow=true;
-	private int favTextSize=8;
+	private int favIconSize = 4;
+	private boolean favTextShow = true;
+	private int favTextSize = 8;
 
 	private void setAppGv() {
 		// 列数
 		allAppGv.setNumColumns(appSetting.get(PreferenceUtils.ALLCOLUMNS));
 		// 图标大小
-		appIconSize = Utils.dip2px(appSetting.get(PreferenceUtils.ALLSIZE), scale);
+		appIconSize = Utils.dip2px(appSetting.get(PreferenceUtils.ALLSIZE),
+				scale);
 		// 行高
 		int num = appSetting.get(PreferenceUtils.ALLLINES);
 		if (num > 0) {
 			allAppGv.setVerticalSpacing(num);
-			appTextShow=true;
+			appTextShow = true;
 		} else {
 			appTextShow = false;
 		}
 		// 文本大小
-		appTextSize = Utils.sp2px(appSetting.get(PreferenceUtils.ALLTEXT), scale);
+		appTextSize = Utils.sp2px(appSetting.get(PreferenceUtils.ALLTEXT),
+				scale);
 		appAdapter.notifyDataSetChanged();
 	}
 
 	private void setFavGv() {
-		if(favAppGv!=null){
+		if (favAppGv != null) {
 			// 列数
-			int i=favSetting.get(PreferenceUtils.FAVCOLUMNS);
+			int i = favSetting.get(PreferenceUtils.FAVCOLUMNS);
 			favAppGv.setNumColumns(i);
 			// 图标大小
-			favIconSize = Utils.dip2px(favSetting.get(PreferenceUtils.FAVSIZE), scale);
+			favIconSize = Utils.dip2px(favSetting.get(PreferenceUtils.FAVSIZE),
+					scale);
 			// 行高
 			int num = favSetting.get(PreferenceUtils.FAVLINES);
 			if (num > 0) {
 				favAppGv.setVerticalSpacing(num);
-				favTextShow=true;
+				favTextShow = true;
 			} else {
 				favTextShow = false;
 			}
 			// 文本大小
-			favTextSize = Utils.sp2px(favSetting.get(PreferenceUtils.FAVTEXT), scale);
+			favTextSize = Utils.sp2px(favSetting.get(PreferenceUtils.FAVTEXT),
+					scale);
 		}
 		favortieGvAdapter.notifyDataSetChanged();
 	}
@@ -229,32 +260,35 @@ public class Launcher extends Activity {
 			loadAppSet();
 			return null;
 		}
+
 		@Override
 		protected void onPostExecute(Void result) {
 			super.onPostExecute(result);
 			setAppGv();
 		}
 	}
-	public class AsyncFavLoadSet extends AsyncTask<Void,Void,Void>{
+
+	public class AsyncFavLoadSet extends AsyncTask<Void, Void, Void> {
 		@Override
 		protected Void doInBackground(Void... params) {
 			loadFavSet();
 			return null;
 		}
+
 		@Override
 		protected void onPostExecute(Void result) {
 			setFavGv();
 		}
 	}
-	
-	public void flushAppGv(){
+
+	public void flushAppGv() {
 		new AsyncAppLoadSet().execute();
 	}
 
-	public void flushFavGv(){
+	public void flushFavGv() {
 		new AsyncFavLoadSet().execute();
 	}
-	
+
 	private AdapterView.OnItemClickListener favClickListener = new AdapterView.OnItemClickListener() {
 
 		@Override
@@ -428,12 +462,12 @@ public class Launcher extends Activity {
 			drawable.setBounds(0, 0, appIconSize, appIconSize);
 			tv.setCompoundDrawables(null, drawable, null, null);
 			tv.setTextSize(appTextSize);
-			if(appTextShow){
+			if (appTextShow) {
 				tv.setText(ai.resolveInfo.loadLabel(getPackageManager()));
-			}else{
+			} else {
 				tv.setText("");
 			}
-			
+
 			return cv;
 		}
 
@@ -485,9 +519,9 @@ public class Launcher extends Activity {
 			drawable.setBounds(0, 0, favIconSize, favIconSize);
 			tv.setCompoundDrawables(null, drawable, null, null);
 			tv.setTextSize(favTextSize);
-			if(favTextShow){
+			if (favTextShow) {
 				tv.setText(app.getTitle());
-			}else{
+			} else {
 				tv.setText("");
 			}
 			return cv;

@@ -10,8 +10,8 @@
         android:layout_height="match_parent"
         android:orientation="vertical" >
 
-        <LinearLayout
-            android:id="@+id/layout_weather" 
+        <RelativeLayout
+            android:id="@+id/layout_weather"
             android:layout_width="fill_parent"
             android:layout_height="200dp"
             android:background="@drawable/dawn_a"
@@ -21,17 +21,22 @@
                 android:id="@+id/digitalClock1"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_alignParentLeft="true"
                 android:text="DigitalClock"
                 android:textSize="22sp" />
-        </LinearLayout>
+
+            <TextView
+                android:id="@+id/weathtext" android:text="天气加载中。。。"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true" />
+        </RelativeLayout>
 
         <com.inzi123.widget.ScrollLayout
             android:layout_width="fill_parent"
             android:layout_height="fill_parent"
             android:layout_weight="1" >
 
-            
-            
             <fragment
                 android:id="@+id/header"
                 android:name="com.inzi123.fragment.SettingsFragment"
