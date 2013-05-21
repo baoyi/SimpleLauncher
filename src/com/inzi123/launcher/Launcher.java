@@ -19,7 +19,6 @@ import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -90,14 +89,9 @@ public class Launcher extends Activity {
 		SharedPreferences sp = getSharedPreferences(
 				"com.inzi123.launcher_preferences", Context.MODE_PRIVATE);
 		String imagekey = sp.getString("city", "奥斯汀");
-<<<<<<< HEAD
-		layout_weather.setBackgroundResource(Datas.dawnpics.get(imagekey));
-
-=======
-		layout_weather.setBackgroundResource(Datas.pics.get(imagekey));
+		layout_weather.setBackgroundResource(Datas.daypics.get(imagekey));
 		flushAppGv();
 		flushFavGv();
->>>>>>> 0d75d8e0b4b2278cc9c2b5b02ee65d7dda241b51
 	}
 
 	@Override
@@ -110,8 +104,6 @@ public class Launcher extends Activity {
 		IntentFilter timeFilter = new IntentFilter();
 		timeFilter.addAction("com.update.time");
 		registerReceiver(timereceiver, timeFilter);
-		Intent intent=new Intent(this,AlertService.class);
-		startService(intent);
 	}
 
 	@Override
@@ -119,10 +111,7 @@ public class Launcher extends Activity {
 		super.onPause();
 		unregisterReceiver(receiver);
 		unregisterReceiver(timereceiver);
-
-		
 	}
-
 	private BroadcastReceiver receiver = new BroadcastReceiver() {
 
 		@Override
@@ -160,6 +149,7 @@ public class Launcher extends Activity {
 		}
 	};
 
+
 	private HashMap<String, Integer> appSetting = new HashMap<String, Integer>();
 	private HashMap<String, Integer> favSetting = new HashMap<String, Integer>();
 
@@ -188,41 +178,24 @@ public class Launcher extends Activity {
 	private boolean appTextShow = true;
 	private int appTextSize = 4;
 	private int appIconSize = 8;
-<<<<<<< HEAD
-=======
 	private int favIconSize=4;
 	private boolean favTextShow=true;
 	private int favTextSize=8;
->>>>>>> 0d75d8e0b4b2278cc9c2b5b02ee65d7dda241b51
 
 	private void setAppGv() {
 		// 列数
 		allAppGv.setNumColumns(appSetting.get(PreferenceUtils.ALLCOLUMNS));
 		// 图标大小
-<<<<<<< HEAD
-
-=======
 		appIconSize = Utils.dip2px(appSetting.get(PreferenceUtils.ALLSIZE), scale);
->>>>>>> 0d75d8e0b4b2278cc9c2b5b02ee65d7dda241b51
 		// 行高
 		int num = appSetting.get(PreferenceUtils.ALLLINES);
 		if (num > 0) {
 			allAppGv.setVerticalSpacing(num);
-<<<<<<< HEAD
-=======
 			appTextShow=true;
->>>>>>> 0d75d8e0b4b2278cc9c2b5b02ee65d7dda241b51
 		} else {
 			appTextShow = false;
 		}
 		// 文本大小
-<<<<<<< HEAD
-		appTextSize = appSetting.get(PreferenceUtils.ALLTEXT);
-
-	}
-
-	class AsyncLoadSet extends AsyncTask<Void, Void, Void> {
-=======
 		appTextSize = Utils.sp2px(appSetting.get(PreferenceUtils.ALLTEXT), scale);
 		appAdapter.notifyDataSetChanged();
 	}
@@ -247,7 +220,6 @@ public class Launcher extends Activity {
 		}
 		favortieGvAdapter.notifyDataSetChanged();
 	}
->>>>>>> 0d75d8e0b4b2278cc9c2b5b02ee65d7dda241b51
 
 	public class AsyncAppLoadSet extends AsyncTask<Void, Void, Void> {
 		@Override
@@ -258,13 +230,6 @@ public class Launcher extends Activity {
 		@Override
 		protected void onPostExecute(Void result) {
 			super.onPostExecute(result);
-<<<<<<< HEAD
-
-		}
-
-	}
-
-=======
 			setAppGv();
 		}
 	}
@@ -288,7 +253,6 @@ public class Launcher extends Activity {
 		new AsyncFavLoadSet().execute();
 	}
 	
->>>>>>> 0d75d8e0b4b2278cc9c2b5b02ee65d7dda241b51
 	private AdapterView.OnItemClickListener favClickListener = new AdapterView.OnItemClickListener() {
 
 		@Override
