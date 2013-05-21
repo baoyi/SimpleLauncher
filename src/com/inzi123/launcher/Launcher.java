@@ -88,12 +88,15 @@ public class Launcher extends Activity {
 		f.getView();
 		SharedPreferences sp = getSharedPreferences(
 				"com.inzi123.launcher_preferences", Context.MODE_PRIVATE);
-		String imagekey = sp.getString("city", "奥斯汀");
-		layout_weather.setBackgroundResource(Datas.daypics.get(imagekey));
+		 city = sp.getString("city", "奥斯汀");
+		layout_weather.setBackgroundResource(Datas.daypics.get(city));
 		flushAppGv();
 		flushFavGv();
+		
+		Intent alert=new Intent(this, AlertService.class);
+		startService(alert);
 	}
-
+	String city;
 	@Override
 	protected void onResume() {
 		super.onResume();
@@ -117,7 +120,7 @@ public class Launcher extends Activity {
 		@Override
 		public void onReceive(Context context, Intent intent) {
 			if (intent.getAction().equals("com.change.image")) {
-				String city = intent.getStringExtra("city");
+				 city = intent.getStringExtra("city");
 				layout_weather.setBackgroundResource(Datas.dawnpics.get(city));
 			}
 		}
@@ -129,7 +132,6 @@ public class Launcher extends Activity {
 		public void onReceive(Context context, Intent intent) {
 			if (intent.getAction().equals("com.update.time")) {
 				Log.i("ada", "更新时间");
-				String city = intent.getStringExtra("city");
 				Calendar calendar = Calendar.getInstance();
 				int hour=calendar.get(Calendar.HOUR_OF_DAY);
 				hour=hour/6;

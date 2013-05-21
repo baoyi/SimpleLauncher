@@ -7,6 +7,10 @@ import com.inzi123.launcher.R;
 public class Datas {
 
 	public static HashMap<String,Integer> dawnpics;
+	public static HashMap<String,Integer> duskpics;
+	public static HashMap<String,Integer> nightpics;
+	public static HashMap<String,Integer> daypics;
+
 	static{
 		dawnpics=new HashMap<String, Integer>();
 		dawnpics.put("奥斯汀", R.drawable.dawn);
@@ -21,9 +25,7 @@ public class Datas {
 		dawnpics.put("西雅图", R.drawable.dawn_s);
 		dawnpics.put("塔霍湖", R.drawable.dawn_t);
 
-	}
-	public static HashMap<String,Integer> duskpics;
-	static{
+		
 		duskpics=new HashMap<String, Integer>();
 		duskpics.put("奥斯汀", R.drawable.dusk);
 		duskpics.put("海滩", R.drawable.dusk_a);
@@ -36,10 +38,7 @@ public class Datas {
 		duskpics.put("旧金山", R.drawable.dusk_p);
 		duskpics.put("西雅图", R.drawable.dusk_s);
 		duskpics.put("塔霍湖", R.drawable.dusk_t);
-
-	}
-	public static HashMap<String,Integer> nightpics;
-	static{
+		
 		nightpics=new HashMap<String, Integer>();
 		nightpics.put("奥斯汀", R.drawable.night);
 		nightpics.put("海滩", R.drawable.night_a);
@@ -52,9 +51,8 @@ public class Datas {
 		nightpics.put("旧金山", R.drawable.night_p);
 		nightpics.put("西雅图", R.drawable.night_s);
 		nightpics.put("塔霍湖", R.drawable.night_t);
-	}
-	public static HashMap<String,Integer> daypics;
-	static{
+		
+		
 		daypics=new HashMap<String, Integer>();
 		daypics.put("奥斯汀", R.drawable.day);
 		daypics.put("海滩", R.drawable.day_a);
