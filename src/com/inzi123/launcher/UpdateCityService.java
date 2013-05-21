@@ -22,7 +22,7 @@ public class UpdateCityService extends Service {
 	@Override
 	public int onStartCommand(Intent intent, int flags, int startId) {
 
-		final Location location = (Location) getApplication();
+		final LauncherApplication location = (LauncherApplication) getApplication();
 		location.mLocationClient
 				.registerLocationListener(new BDLocationListener() {
 

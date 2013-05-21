@@ -55,7 +55,7 @@ public class Launcher extends Activity {
 
 	PackageManager pm;
 	IconCache iconCache;
-	private Location application;
+	private LauncherApplication application;
 
 	private DBHelper dbHelper;
 	private LayoutInflater li;
@@ -86,7 +86,7 @@ public class Launcher extends Activity {
 		setContentView(R.layout.activity_main);
 		li = LayoutInflater.from(Launcher.this);
 		scale = getResources().getDisplayMetrics().density;
-		application = (Location) getApplication();
+		application = (LauncherApplication) getApplication();
 		iconCache = application.getIconCache();
 		dbHelper = new DBHelper(this);
 		allAppGv = (GridView) findViewById(R.id.allAppGv);
