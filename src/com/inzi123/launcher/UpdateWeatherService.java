@@ -48,17 +48,17 @@ public class UpdateWeatherService extends Service {
 			List<Weather> ws = info.getResults();
 			if (ws != null && ws.size() > 0) {
 				Weather w = ws.get(0);
-				resutl =info.getCurrentCity()+"的天气\n"+ w.getWeather() + "\n" + w.getTemperature();
+				resutl =w.getDate()+"\n"+city+"的天气\n"+ w.getWeather() + "\n" + w.getTemperature();
 			}
 		}
 		return resutl;
 	}
-
+	String city;
 	private Runnable updateWeather = new Runnable() {
 
 		@Override
 		public void run() {
-			String city=PreferenceUtils.getStringValue(UpdateWeatherService.this, "cityname", "长寿");
+			 city=PreferenceUtils.getStringValue(UpdateWeatherService.this, "cityname", "长寿");
 			Weatherinfo info = WeatherApi.findByCity(city);
 			sendWeather(info);
 		}
