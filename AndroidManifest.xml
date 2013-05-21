@@ -59,7 +59,8 @@
             <!--
           		<intent-filter>
 				<action android:name="com.baidu.location.service_v2.9"></action>
-			</intent-filter>
+			</intent-filter>
+
             -->
         </service>
 
@@ -72,6 +73,26 @@
               <data android:scheme="package" />    
             </intent-filter>    
         </receiver> 
+
+        <service
+            android:name="com.inzi123.launcher.UpdataPicService"
+            android:enabled="true"
+            android:exported="true" >
+        </service>
+        <service
+            android:name="com.inzi123.launcher.AlertService"
+            android:exported="false" >
+        </service>
+        <service
+            android:name="com.inzi123.launcher.UpdateWeatherService"
+            android:enabled="true"
+            android:exported="true" >
+        </service>
+        <service
+            android:name="com.inzi123.launcher.UpdateCityService"
+            android:enabled="true"
+            android:exported="true" >
+        </service>
     </application>
 
 </manifest>

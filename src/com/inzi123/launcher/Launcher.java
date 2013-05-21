@@ -2,6 +2,7 @@ package com.inzi123.launcher;
 
 import java.net.URISyntaxException;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
 
@@ -18,7 +19,6 @@ import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -39,7 +39,6 @@ import com.inzi123.entity.FavoriteApp;
 import com.inzi123.fragment.SettingsFragment;
 import com.inzi123.utils.PreferenceUtils;
 import com.inzi123.utils.Utils;
-import com.inzi123.launcher.R;
 
 public class Launcher extends Activity {
 
@@ -90,7 +89,7 @@ public class Launcher extends Activity {
 		SharedPreferences sp = getSharedPreferences(
 				"com.inzi123.launcher_preferences", Context.MODE_PRIVATE);
 		String imagekey = sp.getString("city", "奥斯汀");
-		layout_weather.setBackgroundResource(Datas.pics.get(imagekey));
+		layout_weather.setBackgroundResource(Datas.daypics.get(imagekey));
 		flushAppGv();
 		flushFavGv();
 	}
@@ -101,24 +100,55 @@ public class Launcher extends Activity {
 		IntentFilter intentFilter = new IntentFilter();
 		intentFilter.addAction("com.change.image");
 		registerReceiver(receiver, intentFilter);
+		
+		IntentFilter timeFilter = new IntentFilter();
+		timeFilter.addAction("com.update.time");
+		registerReceiver(timereceiver, timeFilter);
 	}
 
 	@Override
 	protected void onPause() {
 		super.onPause();
 		unregisterReceiver(receiver);
+		unregisterReceiver(timereceiver);
 	}
-
 	private BroadcastReceiver receiver = new BroadcastReceiver() {
 
 		@Override
 		public void onReceive(Context context, Intent intent) {
 			if (intent.getAction().equals("com.change.image")) {
 				String city = intent.getStringExtra("city");
-				layout_weather.setBackgroundResource(Datas.pics.get(city));
+				layout_weather.setBackgroundResource(Datas.dawnpics.get(city));
 			}
 		}
 	};
+
+	private BroadcastReceiver timereceiver = new BroadcastReceiver() {
+
+		@Override
+		public void onReceive(Context context, Intent intent) {
+			if (intent.getAction().equals("com.update.time")) {
+				Log.i("ada", "更新时间");
+				String city = intent.getStringExtra("city");
+				Calendar calendar = Calendar.getInstance();
+				int hour=calendar.get(Calendar.HOUR_OF_DAY);
+				hour=hour/6;
+				if(hour==0){
+					layout_weather.setBackgroundResource(Datas.dawnpics.get(city));
+				}
+				if(hour==1){
+					layout_weather.setBackgroundResource(Datas.duskpics.get(city));
+				}
+				if(hour==2){
+					layout_weather.setBackgroundResource(Datas.daypics.get(city));
+				}
+				if(hour==3){
+					layout_weather.setBackgroundResource(Datas.nightpics.get(city));
+				}
+			}
+		}
+	};
+
 
 	private HashMap<String, Integer> appSetting = new HashMap<String, Integer>();
 	private HashMap<String, Integer> favSetting = new HashMap<String, Integer>();
