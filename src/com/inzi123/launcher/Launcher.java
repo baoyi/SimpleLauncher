@@ -60,10 +60,11 @@ public class Launcher extends Activity {
 	private DBHelper dbHelper;
 	private LayoutInflater li;
 	FavortieGvAdapter favortieGvAdapter;
-	LinearLayout layout_weather;
+	View layout_weather;
 	private float scale;
 	private AppAdapter appAdapter;
 	
+
 	private ServiceConnection conn = new ServiceConnection() {
 
 		@Override
@@ -90,7 +91,8 @@ public class Launcher extends Activity {
 		dbHelper = new DBHelper(this);
 		allAppGv = (GridView) findViewById(R.id.allAppGv);
 		favAppGv = (GridView) findViewById(R.id.favAppGv);
-		layout_weather = (LinearLayout) findViewById(R.id.layout_weather);
+		weathtext = (TextView) findViewById(R.id.weathtext);
+		layout_weather = findViewById(R.id.layout_weather);
 		pm = getPackageManager();
 		appAdapter = new AppAdapter();
 		favortieGvAdapter = new FavortieGvAdapter();
@@ -98,6 +100,8 @@ public class Launcher extends Activity {
 		bindService(bindservice, conn, Context.BIND_AUTO_CREATE);
 		
 		loadApps();
+		appAdapter = new AppAdapter();
+		favortieGvAdapter = new FavortieGvAdapter();
 
 		allAppGv.setOnItemClickListener(appClickListener);
 
@@ -108,6 +112,7 @@ public class Launcher extends Activity {
 		favAppGv.setOnItemLongClickListener(favItemLongClickListener);
 		SettingsFragment f = new SettingsFragment();
 		f.getView();
+		city = PreferenceUtils.getStringValue(this, "city","芝加哥");
 		SharedPreferences sp = getSharedPreferences(
 				"com.inzi123.launcher_preferences", Context.MODE_PRIVATE);
 		city = sp.getString("city", "奥斯汀");
@@ -117,7 +122,10 @@ public class Launcher extends Activity {
 
 		Intent alert = new Intent(this, AlertService.class);
 		startService(alert);
+		String text = PreferenceUtils.getStringValue(this, "weatherinfo");
+		weathtext.setText(text);
 	}
+
 
 	
 
@@ -133,6 +141,11 @@ public class Launcher extends Activity {
 		IntentFilter timeFilter = new IntentFilter();
 		timeFilter.addAction("com.update.time");
 		registerReceiver(timereceiver, timeFilter);
+
+		IntentFilter weatherFilter = new IntentFilter();
+		weatherFilter.addAction("com.change.weather");
+		registerReceiver(weatherreceiver, weatherFilter);
+
 	}
 
 	@Override
@@ -140,7 +153,11 @@ public class Launcher extends Activity {
 		super.onPause();
 		unregisterReceiver(receiver);
 		unregisterReceiver(timereceiver);
+		unregisterReceiver(weatherreceiver);
+
 	}
+
+	public TextView weathtext;
 
 	private BroadcastReceiver receiver = new BroadcastReceiver() {
 
@@ -152,7 +169,17 @@ public class Launcher extends Activity {
 			}
 		}
 	};
+	private String weather;
+	private BroadcastReceiver weatherreceiver = new BroadcastReceiver() {
 
+		@Override
+		public void onReceive(Context context, Intent intent) {
+			if (intent.getAction().equals("com.change.weather")) {
+				weather = intent.getStringExtra("weather");
+				weathtext.setText(weather);
+			}
+		}
+	};
 	private BroadcastReceiver timereceiver = new BroadcastReceiver() {
 
 		@Override

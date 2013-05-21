@@ -34,4 +34,23 @@ public class PreferenceUtils {
 		return value;
 	}
 	
+	public static void setStringValue(Context context,String key,String value){
+		SharedPreferences sp=PreferenceManager.getDefaultSharedPreferences(context);
+		Editor editor=sp.edit();
+		editor.putString(key, value);
+		editor.commit();
+	}
+	
+	public static String getStringValue(Context context,String key){
+		String value=null;
+		SharedPreferences sp=PreferenceManager.getDefaultSharedPreferences(context);
+		value=sp.getString(key, "");
+		return value;
+	}
+	public static String getStringValue(Context context,String key,String defaultvalue){
+		String value=null;
+		SharedPreferences sp=PreferenceManager.getDefaultSharedPreferences(context);
+		value=sp.getString(key, defaultvalue);
+		return value;
+	}
 }

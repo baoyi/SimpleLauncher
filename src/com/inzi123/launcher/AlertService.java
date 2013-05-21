@@ -26,16 +26,16 @@ public class AlertService extends Service {
 		
 		Intent intent=new Intent(this,UpdataPicService.class);
 		PendingIntent sender=PendingIntent.getService(this, 0, intent, 0);
-		am.setRepeating(AlarmManager.ELAPSED_REALTIME, SystemClock.currentThreadTimeMillis(), 5*1000, sender);
+		am.setRepeating(AlarmManager.ELAPSED_REALTIME, SystemClock.currentThreadTimeMillis(), 60*1000, sender);
 		
 		
 		Intent updateWeather=new Intent(this,UpdateWeatherService.class);
 		PendingIntent pendingupdateweather=PendingIntent.getService(this, 0, updateWeather, 0);
-		am.setRepeating(AlarmManager.ELAPSED_REALTIME,SystemClock.currentThreadTimeMillis(), 5*1000, pendingupdateweather);
+		am.setRepeating(AlarmManager.ELAPSED_REALTIME,SystemClock.currentThreadTimeMillis(), 60*1000, pendingupdateweather);
 
 		Intent UpdateCityService=new Intent(this,UpdateCityService.class);
 		PendingIntent pendingUpdateCityService=PendingIntent.getService(this, 0, UpdateCityService, 0);
-		am.setRepeating(AlarmManager.ELAPSED_REALTIME, SystemClock.currentThreadTimeMillis(), 5*1000, pendingUpdateCityService);
+		am.setRepeating(AlarmManager.ELAPSED_REALTIME, SystemClock.currentThreadTimeMillis(), 601000, pendingUpdateCityService);
 
 		
 		super.onCreate();
