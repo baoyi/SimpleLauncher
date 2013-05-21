@@ -32,7 +32,7 @@
                 android:layout_alignParentRight="true" />
         </RelativeLayout>
 
-        <com.inzi123.widget.ScrollLayout
+        <com.inzi123.widget.ScrollLayout android:id="@+id/scrollLayout"
             android:layout_width="fill_parent"
             android:layout_height="fill_parent"
             android:layout_weight="1" >

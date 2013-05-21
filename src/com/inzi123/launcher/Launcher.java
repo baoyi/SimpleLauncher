@@ -31,7 +31,6 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.BaseAdapter;
 import android.widget.GridView;
-import android.widget.LinearLayout;
 import android.widget.PopupMenu;
 import android.widget.TextView;
 
@@ -44,6 +43,7 @@ import com.inzi123.fragment.SettingsFragment;
 import com.inzi123.launcher.UpDataAppService.MyBinder;
 import com.inzi123.utils.PreferenceUtils;
 import com.inzi123.utils.Utils;
+import com.inzi123.widget.ScrollLayout;
 
 public class Launcher extends Activity {
 
@@ -79,7 +79,7 @@ public class Launcher extends Activity {
 			bindService.MyMethod(Launcher.this);
 		}
 	};
-
+	ScrollLayout scrollLayout;
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -93,6 +93,8 @@ public class Launcher extends Activity {
 		favAppGv = (GridView) findViewById(R.id.favAppGv);
 		weathtext = (TextView) findViewById(R.id.weathtext);
 		layout_weather = findViewById(R.id.layout_weather);
+		scrollLayout= (ScrollLayout) findViewById(R.id.scrollLayout);
+		scrollLayout.setToScreen(1);
 		pm = getPackageManager();
 		appAdapter = new AppAdapter();
 		favortieGvAdapter = new FavortieGvAdapter();
@@ -211,6 +213,7 @@ public class Launcher extends Activity {
 
 	public boolean onKeyDown(int keyCode, android.view.KeyEvent event) {
 		if (keyCode == KeyEvent.KEYCODE_BACK) {
+			scrollLayout.setToScreen(1);
 			Intent intent = new Intent(Launcher.this, UpDataAppService.class);
 			startService(intent);
 		}
