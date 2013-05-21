@@ -19,9 +19,8 @@ public class UpdateWeatherService extends Service {
 
 	@Override
 	public int onStartCommand(Intent intent, int flags, int startId) {
-		// TODO Auto-generated method stub
+		WeatherApi.findByCity("");
 		return super.onStartCommand(intent, flags, startId);
-		WeatherApi.findByCity(city);
 	}
 
 	@Override
