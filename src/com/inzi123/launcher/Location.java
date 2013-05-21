@@ -26,6 +26,11 @@ public class Location extends Application {
 	@Override
 	public void onCreate() {
 		mLocationClient = new LocationClient(this);
+		LocationClientOption option=new LocationClientOption();
+		option.setOpenGps(true);
+		option.setAddrType("all");
+		option.setPoiExtraInfo(true);
+		mLocationClient.setLocOption(option);
 		// locationClient = new LocationClient( this );
 		// LocationClient = new LocationClient( this );
 		mLocationClient.registerLocationListener(myListener);

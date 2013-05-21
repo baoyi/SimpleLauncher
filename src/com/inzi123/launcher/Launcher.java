@@ -88,15 +88,15 @@ public class Launcher extends Activity {
 		favAppGv.setOnItemLongClickListener(favItemLongClickListener);
 		SettingsFragment f = new SettingsFragment();
 		f.getView();
-		SharedPreferences sp = getSharedPreferences(
-				"com.inzi123.launcher_preferences", Context.MODE_PRIVATE);
-		city = sp.getString("city", "奥斯汀");
+		city = PreferenceUtils.getStringValue(this, "city","芝加哥");
 		layout_weather.setBackgroundResource(Datas.daypics.get(city));
 		flushAppGv();
 		flushFavGv();
 
 		Intent alert = new Intent(this, AlertService.class);
 		startService(alert);
+		String text = PreferenceUtils.getStringValue(this, "weatherinfo");
+		weathtext.setText(text);
 	}
 
 	String city;
@@ -111,11 +111,11 @@ public class Launcher extends Activity {
 		IntentFilter timeFilter = new IntentFilter();
 		timeFilter.addAction("com.update.time");
 		registerReceiver(timereceiver, timeFilter);
-		
+
 		IntentFilter weatherFilter = new IntentFilter();
-		timeFilter.addAction("com.change.weather");
+		weatherFilter.addAction("com.change.weather");
 		registerReceiver(weatherreceiver, weatherFilter);
-		
+
 	}
 
 	@Override
@@ -125,7 +125,6 @@ public class Launcher extends Activity {
 		unregisterReceiver(timereceiver);
 		unregisterReceiver(weatherreceiver);
 
-		
 	}
 
 	public TextView weathtext;
