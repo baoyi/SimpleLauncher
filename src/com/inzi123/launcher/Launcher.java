@@ -19,6 +19,7 @@ import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -56,25 +57,26 @@ public class Launcher extends Activity {
 	private LayoutInflater li;
 	FavortieGvAdapter favortieGvAdapter;
 	LinearLayout layout_weather;
-
+	private float scale;
+	private AppAdapter appAdapter;
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
 		li = LayoutInflater.from(Launcher.this);
+		scale = getResources().getDisplayMetrics().density;
 		application = (Location) getApplication();
 		iconCache = application.getIconCache();
 		dbHelper = new DBHelper(this);
-
 		allAppGv = (GridView) findViewById(R.id.allAppGv);
 		favAppGv = (GridView) findViewById(R.id.favAppGv);
 		layout_weather = (LinearLayout) findViewById(R.id.layout_weather);
 		pm = getPackageManager();
 		loadApps();
-		AppAdapter adapter = new AppAdapter();
+		 appAdapter = new AppAdapter();
 		favortieGvAdapter = new FavortieGvAdapter();
 
-		allAppGv.setAdapter(adapter);
+		allAppGv.setAdapter(appAdapter);
 		allAppGv.setNumColumns(5);
 		allAppGv.setOnItemClickListener(appClickListener);
 
@@ -88,13 +90,18 @@ public class Launcher extends Activity {
 		SharedPreferences sp = getSharedPreferences(
 				"com.inzi123.launcher_preferences", Context.MODE_PRIVATE);
 		String imagekey = sp.getString("city", "奥斯汀");
+<<<<<<< HEAD
 		layout_weather.setBackgroundResource(Datas.dawnpics.get(imagekey));
 
+=======
+		layout_weather.setBackgroundResource(Datas.pics.get(imagekey));
+		flushAppGv();
+		flushFavGv();
+>>>>>>> 0d75d8e0b4b2278cc9c2b5b02ee65d7dda241b51
 	}
 
 	@Override
 	protected void onResume() {
-		// TODO Auto-generated method stub
 		super.onResume();
 		IntentFilter intentFilter = new IntentFilter();
 		intentFilter.addAction("com.change.image");
@@ -109,7 +116,6 @@ public class Launcher extends Activity {
 
 	@Override
 	protected void onPause() {
-		// TODO Auto-generated method stub
 		super.onPause();
 		unregisterReceiver(receiver);
 		unregisterReceiver(timereceiver);
@@ -182,41 +188,107 @@ public class Launcher extends Activity {
 	private boolean appTextShow = true;
 	private int appTextSize = 4;
 	private int appIconSize = 8;
+<<<<<<< HEAD
+=======
+	private int favIconSize=4;
+	private boolean favTextShow=true;
+	private int favTextSize=8;
+>>>>>>> 0d75d8e0b4b2278cc9c2b5b02ee65d7dda241b51
 
 	private void setAppGv() {
 		// 列数
 		allAppGv.setNumColumns(appSetting.get(PreferenceUtils.ALLCOLUMNS));
 		// 图标大小
+<<<<<<< HEAD
 
+=======
+		appIconSize = Utils.dip2px(appSetting.get(PreferenceUtils.ALLSIZE), scale);
+>>>>>>> 0d75d8e0b4b2278cc9c2b5b02ee65d7dda241b51
 		// 行高
 		int num = appSetting.get(PreferenceUtils.ALLLINES);
 		if (num > 0) {
 			allAppGv.setVerticalSpacing(num);
+<<<<<<< HEAD
+=======
+			appTextShow=true;
+>>>>>>> 0d75d8e0b4b2278cc9c2b5b02ee65d7dda241b51
 		} else {
 			appTextShow = false;
 		}
 		// 文本大小
+<<<<<<< HEAD
 		appTextSize = appSetting.get(PreferenceUtils.ALLTEXT);
 
 	}
 
 	class AsyncLoadSet extends AsyncTask<Void, Void, Void> {
+=======
+		appTextSize = Utils.sp2px(appSetting.get(PreferenceUtils.ALLTEXT), scale);
+		appAdapter.notifyDataSetChanged();
+	}
 
+	private void setFavGv() {
+		if(favAppGv!=null){
+			// 列数
+			int i=favSetting.get(PreferenceUtils.FAVCOLUMNS);
+			favAppGv.setNumColumns(i);
+			// 图标大小
+			favIconSize = Utils.dip2px(favSetting.get(PreferenceUtils.FAVSIZE), scale);
+			// 行高
+			int num = favSetting.get(PreferenceUtils.FAVLINES);
+			if (num > 0) {
+				favAppGv.setVerticalSpacing(num);
+				favTextShow=true;
+			} else {
+				favTextShow = false;
+			}
+			// 文本大小
+			favTextSize = Utils.sp2px(favSetting.get(PreferenceUtils.FAVTEXT), scale);
+		}
+		favortieGvAdapter.notifyDataSetChanged();
+	}
+>>>>>>> 0d75d8e0b4b2278cc9c2b5b02ee65d7dda241b51
+
+	public class AsyncAppLoadSet extends AsyncTask<Void, Void, Void> {
 		@Override
 		protected Void doInBackground(Void... params) {
 			loadAppSet();
-			loadFavSet();
 			return null;
 		}
-
 		@Override
 		protected void onPostExecute(Void result) {
 			super.onPostExecute(result);
+<<<<<<< HEAD
 
 		}
 
 	}
 
+=======
+			setAppGv();
+		}
+	}
+	public class AsyncFavLoadSet extends AsyncTask<Void,Void,Void>{
+		@Override
+		protected Void doInBackground(Void... params) {
+			loadFavSet();
+			return null;
+		}
+		@Override
+		protected void onPostExecute(Void result) {
+			setFavGv();
+		}
+	}
+	
+	public void flushAppGv(){
+		new AsyncAppLoadSet().execute();
+	}
+
+	public void flushFavGv(){
+		new AsyncFavLoadSet().execute();
+	}
+	
+>>>>>>> 0d75d8e0b4b2278cc9c2b5b02ee65d7dda241b51
 	private AdapterView.OnItemClickListener favClickListener = new AdapterView.OnItemClickListener() {
 
 		@Override
@@ -389,9 +461,15 @@ public class Launcher extends Activity {
 			ApplicationInfo ai = allAppList.get(arg0);
 			BitmapDrawable drawable = new BitmapDrawable(
 					iconCache.getIcon(ai.intent));
-			drawable.setBounds(0, 0, 80, 80);
+			drawable.setBounds(0, 0, appIconSize, appIconSize);
 			tv.setCompoundDrawables(null, drawable, null, null);
-			tv.setText(ai.resolveInfo.loadLabel(getPackageManager()));
+			tv.setTextSize(appTextSize);
+			if(appTextShow){
+				tv.setText(ai.resolveInfo.loadLabel(getPackageManager()));
+			}else{
+				tv.setText("");
+			}
+			
 			return cv;
 		}
 
@@ -440,12 +518,16 @@ public class Launcher extends Activity {
 			} catch (URISyntaxException e) {
 				e.printStackTrace();
 			}
-			drawable.setBounds(0, 0, 80, 80);
+			drawable.setBounds(0, 0, favIconSize, favIconSize);
 			tv.setCompoundDrawables(null, drawable, null, null);
-			tv.setText(app.getTitle());
+			tv.setTextSize(favTextSize);
+			if(favTextShow){
+				tv.setText(app.getTitle());
+			}else{
+				tv.setText("");
+			}
 			return cv;
 		}
 
 	}
-
 }
