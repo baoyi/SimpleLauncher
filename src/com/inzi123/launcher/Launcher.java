@@ -269,10 +269,8 @@ public class Launcher extends Activity {
 		public void onItemClick(AdapterView<?> arg0, View arg1, int arg2,
 				long arg3) {
 			ApplicationInfo ai = (ApplicationInfo) arg0.getItemAtPosition(arg2);
-			// ȡ������İ���
 			Intent i = pm.getLaunchIntentForPackage(ai
 					.getPackageName(ai.intent));
-			// ���ó��򲻿���������ϵͳ�Դ�İ��кܶ���û����ڵģ��᷵��NULL
 			// String url = i.toUri(0);
 			// try {
 			// i = Intent.parseUri(url, 0);
