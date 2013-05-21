@@ -214,8 +214,6 @@ public class Launcher extends Activity {
 	public boolean onKeyDown(int keyCode, android.view.KeyEvent event) {
 		if (keyCode == KeyEvent.KEYCODE_BACK) {
 			scrollLayout.setToScreen(1);
-			Intent intent = new Intent(Launcher.this, UpDataAppService.class);
-			startService(intent);
 		}
 		return true;
 
