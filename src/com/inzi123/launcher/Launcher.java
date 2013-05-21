@@ -2,6 +2,7 @@ package com.inzi123.launcher;
 
 import java.net.URISyntaxException;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
 
@@ -38,7 +39,6 @@ import com.inzi123.entity.FavoriteApp;
 import com.inzi123.fragment.SettingsFragment;
 import com.inzi123.utils.PreferenceUtils;
 import com.inzi123.utils.Utils;
-import com.inzi123.launcher.R;
 
 public class Launcher extends Activity {
 
@@ -88,8 +88,7 @@ public class Launcher extends Activity {
 		SharedPreferences sp = getSharedPreferences(
 				"com.inzi123.launcher_preferences", Context.MODE_PRIVATE);
 		String imagekey = sp.getString("city", "奥斯汀");
-		layout_weather.setBackgroundResource(Datas.pics.get(imagekey));
-
+		layout_weather.setBackgroundResource(Datas.dawnpics.get(imagekey));
 
 	}
 
@@ -100,6 +99,12 @@ public class Launcher extends Activity {
 		IntentFilter intentFilter = new IntentFilter();
 		intentFilter.addAction("com.change.image");
 		registerReceiver(receiver, intentFilter);
+		
+		IntentFilter timeFilter = new IntentFilter();
+		timeFilter.addAction("com.update.time");
+		registerReceiver(timereceiver, timeFilter);
+		Intent intent=new Intent(this,AlertService.class);
+		startService(intent);
 	}
 
 	@Override
@@ -107,6 +112,9 @@ public class Launcher extends Activity {
 		// TODO Auto-generated method stub
 		super.onPause();
 		unregisterReceiver(receiver);
+		unregisterReceiver(timereceiver);
+
+		
 	}
 
 	private BroadcastReceiver receiver = new BroadcastReceiver() {
@@ -115,51 +123,84 @@ public class Launcher extends Activity {
 		public void onReceive(Context context, Intent intent) {
 			if (intent.getAction().equals("com.change.image")) {
 				String city = intent.getStringExtra("city");
-				layout_weather.setBackgroundResource(Datas.pics.get(city));
+				layout_weather.setBackgroundResource(Datas.dawnpics.get(city));
 			}
 		}
 	};
-		
 
-	private HashMap<String,Integer> appSetting=new HashMap<String, Integer>();
-	private HashMap<String,Integer> favSetting=new HashMap<String, Integer>();
-	
-	private void loadAppSet(){
-		appSetting.put(PreferenceUtils.ALLCOLUMNS, PreferenceUtils.getIntValue(this, PreferenceUtils.ALLCOLUMNS));
-		appSetting.put(PreferenceUtils.ALLSIZE, PreferenceUtils.getIntValue(this, PreferenceUtils.ALLSIZE));
-		appSetting.put(PreferenceUtils.ALLLINES, PreferenceUtils.getIntValue(this, PreferenceUtils.ALLLINES));
-		appSetting.put(PreferenceUtils.ALLTEXT, PreferenceUtils.getIntValue(this, PreferenceUtils.ALLTEXT));
-	}
-	
-	private void loadFavSet(){
-		favSetting.put(PreferenceUtils.FAVCOLUMNS, PreferenceUtils.getIntValue(this, PreferenceUtils.FAVCOLUMNS));
-		favSetting.put(PreferenceUtils.FAVSIZE, PreferenceUtils.getIntValue(this, PreferenceUtils.FAVSIZE));
-		favSetting.put(PreferenceUtils.FAVLINES, PreferenceUtils.getIntValue(this, PreferenceUtils.FAVLINES));
-		favSetting.put(PreferenceUtils.FAVTEXT, PreferenceUtils.getIntValue(this, PreferenceUtils.FAVTEXT));
-	}
-	
-	private boolean appTextShow=true;
-	private int appTextSize=4;
-	private int appIconSize=8;
-	
-	private void setAppGv(){
-		//列数
-		allAppGv.setNumColumns(appSetting.get(PreferenceUtils.ALLCOLUMNS));
-		//图标大小
-		
-		//行高
-		int num=appSetting.get(PreferenceUtils.ALLLINES);
-		if(num>0){
-			allAppGv.setVerticalSpacing(num);
-		}else{
-			appTextShow=false;
+	private BroadcastReceiver timereceiver = new BroadcastReceiver() {
+
+		@Override
+		public void onReceive(Context context, Intent intent) {
+			if (intent.getAction().equals("com.update.time")) {
+				Log.i("ada", "更新时间");
+				String city = intent.getStringExtra("city");
+				Calendar calendar = Calendar.getInstance();
+				int hour=calendar.get(Calendar.HOUR_OF_DAY);
+				hour=hour/6;
+				if(hour==0){
+					layout_weather.setBackgroundResource(Datas.dawnpics.get(city));
+				}
+				if(hour==1){
+					layout_weather.setBackgroundResource(Datas.duskpics.get(city));
+				}
+				if(hour==2){
+					layout_weather.setBackgroundResource(Datas.daypics.get(city));
+				}
+				if(hour==3){
+					layout_weather.setBackgroundResource(Datas.nightpics.get(city));
+				}
+			}
 		}
-		//文本大小
-		appTextSize=appSetting.get(PreferenceUtils.ALLTEXT);
-		
+	};
+
+	private HashMap<String, Integer> appSetting = new HashMap<String, Integer>();
+	private HashMap<String, Integer> favSetting = new HashMap<String, Integer>();
+
+	private void loadAppSet() {
+		appSetting.put(PreferenceUtils.ALLCOLUMNS,
+				PreferenceUtils.getIntValue(this, PreferenceUtils.ALLCOLUMNS));
+		appSetting.put(PreferenceUtils.ALLSIZE,
+				PreferenceUtils.getIntValue(this, PreferenceUtils.ALLSIZE));
+		appSetting.put(PreferenceUtils.ALLLINES,
+				PreferenceUtils.getIntValue(this, PreferenceUtils.ALLLINES));
+		appSetting.put(PreferenceUtils.ALLTEXT,
+				PreferenceUtils.getIntValue(this, PreferenceUtils.ALLTEXT));
 	}
-	
-	class AsyncLoadSet extends AsyncTask<Void,Void,Void>{
+
+	private void loadFavSet() {
+		favSetting.put(PreferenceUtils.FAVCOLUMNS,
+				PreferenceUtils.getIntValue(this, PreferenceUtils.FAVCOLUMNS));
+		favSetting.put(PreferenceUtils.FAVSIZE,
+				PreferenceUtils.getIntValue(this, PreferenceUtils.FAVSIZE));
+		favSetting.put(PreferenceUtils.FAVLINES,
+				PreferenceUtils.getIntValue(this, PreferenceUtils.FAVLINES));
+		favSetting.put(PreferenceUtils.FAVTEXT,
+				PreferenceUtils.getIntValue(this, PreferenceUtils.FAVTEXT));
+	}
+
+	private boolean appTextShow = true;
+	private int appTextSize = 4;
+	private int appIconSize = 8;
+
+	private void setAppGv() {
+		// 列数
+		allAppGv.setNumColumns(appSetting.get(PreferenceUtils.ALLCOLUMNS));
+		// 图标大小
+
+		// 行高
+		int num = appSetting.get(PreferenceUtils.ALLLINES);
+		if (num > 0) {
+			allAppGv.setVerticalSpacing(num);
+		} else {
+			appTextShow = false;
+		}
+		// 文本大小
+		appTextSize = appSetting.get(PreferenceUtils.ALLTEXT);
+
+	}
+
+	class AsyncLoadSet extends AsyncTask<Void, Void, Void> {
 
 		@Override
 		protected Void doInBackground(Void... params) {
@@ -171,11 +212,11 @@ public class Launcher extends Activity {
 		@Override
 		protected void onPostExecute(Void result) {
 			super.onPostExecute(result);
-			
+
 		}
-		
-	} 
-	
+
+	}
+
 	private AdapterView.OnItemClickListener favClickListener = new AdapterView.OnItemClickListener() {
 
 		@Override
