@@ -18,7 +18,7 @@ import android.widget.Scroller;
  * @modify liux (http://my.oschina.net/liux)
  */
 public class ScrollLayout extends ViewGroup {
-	private static final String TAG = "ScrollLayout";
+	private static final String TAG = "ada";
 	private Scroller mScroller;
 	private VelocityTracker mVelocityTracker;
 	private int mCurScreen;
@@ -154,7 +154,7 @@ public class ScrollLayout extends ViewGroup {
 
 	@Override
 	public boolean onTouchEvent(MotionEvent event) {
-		Log.i("ada", "0  onTouchEvent");
+		Log.e("ada", "0  onTouchEvent");
 
 		// 是否可滑动
 		if (!isScroll) {
@@ -230,6 +230,8 @@ public class ScrollLayout extends ViewGroup {
 
 	@Override
 	public boolean onInterceptTouchEvent(MotionEvent ev) {
+		Log.e("ada", "0  onInterceptTouchEvent");
+
 		final int action = ev.getAction();
 		if ((action == MotionEvent.ACTION_MOVE)
 				&& (mTouchState != TOUCH_STATE_REST)) {
@@ -247,15 +249,24 @@ public class ScrollLayout extends ViewGroup {
 					curscreen++;
 					int deltaX = (int) (mLastMotionX - x);
 					if(curscreen==1){
-						if(deltaX>0){
-							return false;
-						}
-					}
-					if(curscreen==l.getChildCount()){
 						if(deltaX<0){
+							return true;
+						}
+						else{
+							return false;
+						}
+					}else{
+						if(curscreen==l.getChildCount()){
+							if(deltaX>0){
+								return true;
+							}else{
+								return false;
+							}
+						}else{
 							return false;
 						}
 					}
+				
 				}
 			
 				

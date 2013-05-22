@@ -16,7 +16,7 @@ import android.widget.Scroller;
  * @modify liux (http://my.oschina.net/liux)
  */
 public class ScrollLayout1 extends ViewGroup {
-	private static final String TAG = "ScrollLayout";
+	private static final String TAG = "ada";
 	private Scroller mScroller;
 	private VelocityTracker mVelocityTracker;
 	private int mCurScreen;
@@ -181,23 +181,23 @@ public class ScrollLayout1 extends ViewGroup {
 			
 			break;
 		case MotionEvent.ACTION_MOVE:
-			   Log.i(TAG, "0  onTouchEvent-ACTION_MOVE");
-
-			if(!isscroll){
-				return false;
-			}
+			   Log.i(TAG, "1  onTouchEvent-ACTION_MOVE");
+//			if(!isscroll){
+//				return false;
+//			}
 			int deltaX = (int) (mLastMotionX - x);
 			
-			if(mCurScreen==0&&deltaX<0){
-				isscroll=false;
-				Log.i("ada","左边不可以滑动");
-				return false;
-			}
-			if(getChildCount()==(mCurScreen+1)&&deltaX>0){
-				isscroll=false;
-				Log.i("ada","右边不可以滑动");
-				return false;
-			}
+//			if(mCurScreen==0&&deltaX<0){
+//				isscroll=false;
+//				Log.i("ada","左边不可以滑动");
+//				return false;
+//			}
+//			if(getChildCount()==(mCurScreen+1)&&deltaX>0){
+//				isscroll=false;
+//				Log.i("ada","右边不可以滑动");
+//				return false;
+//			}
+			   Log.i(TAG, "1  可以移动");
 			//---------------New Code----------------------
 			int deltaY = (int) (mLastMotionY - y);
 			if(Math.abs(deltaX) < 200 && Math.abs(deltaY) > 10)
@@ -245,7 +245,7 @@ public class ScrollLayout1 extends ViewGroup {
 
 	@Override
 	public boolean onInterceptTouchEvent(MotionEvent ev) {
-		//Log.e(TAG, "onInterceptTouchEvent-slop:" + mTouchSlop);
+		Log.i("ada", "1  onInterceptTouchEvent");
 		final int action = ev.getAction();
 		if ((action == MotionEvent.ACTION_MOVE)
 				&& (mTouchState != TOUCH_STATE_REST)) {
@@ -255,7 +255,7 @@ public class ScrollLayout1 extends ViewGroup {
 		final float y = ev.getY();
 		switch (action) {
 		case MotionEvent.ACTION_MOVE:
-			   Log.i(TAG, "0  onInterceptTouchEvent-ACTION_MOVE");
+			   Log.i(TAG, "1  onInterceptTouchEvent-ACTION_MOVE");
 			final int xDiff = (int) Math.abs(mLastMotionX - x);
 			if (xDiff > mTouchSlop) {
 				mTouchState = TOUCH_STATE_SCROLLING;
