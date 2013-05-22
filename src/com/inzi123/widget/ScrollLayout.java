@@ -156,7 +156,9 @@ public class ScrollLayout extends ViewGroup {
 		if(!isScroll) {
 			return false;
 		}
-		
+		if(ScrollLayout1.SCROLLING){
+			return false;
+		}
 		if (mVelocityTracker == null) {
 			mVelocityTracker = VelocityTracker.obtain();
 		}
@@ -227,13 +229,14 @@ public class ScrollLayout extends ViewGroup {
 			actionType="0-touch-up";
 			break;
 		case MotionEvent.ACTION_CANCEL:
-			mTouchState = TOUCH_STATE_REST;
+			mTouchState = TOUCH_STATE_REST;;
 			break;
 		}
 		Log.d("ddv", actionType);
 		return true;
 	}
 
+	
 	@Override
 	public boolean onInterceptTouchEvent(MotionEvent ev) {
 		//Log.e(TAG, "onInterceptTouchEvent-slop:" + mTouchSlop);
@@ -242,39 +245,46 @@ public class ScrollLayout extends ViewGroup {
 //				&& (mTouchState != TOUCH_STATE_REST)) {
 //			return true;
 //		}
+		if(ScrollLayout1.SCROLLING){
+			return false;
+		}
 		String actionType="";
 		final float x = ev.getX();
 		final float y = ev.getY();
 		switch (action) {
 		case MotionEvent.ACTION_MOVE:
-			if(mCurScreen==1){
-				if(y<100){
-					return false;
-				}
-			}
+//			if(mCurScreen==1){
+//				if(y<100){
+//					return false;
+//				}
+//			}
 			actionType="move";
 			final int xDiff = (int) Math.abs(mLastMotionX - x);
 			if (xDiff > mTouchSlop) {
 				mTouchState = TOUCH_STATE_SCROLLING;
 			}
-			mTouchState = mScroller.isFinished() ? TOUCH_STATE_REST
-					: TOUCH_STATE_SCROLLING;
-			break;
+			if(ScrollLayout1.SCROLLING){
+				return false;
+			}
+//			break;
 		case MotionEvent.ACTION_DOWN:
 			mLastMotionX = x;
 			mLastMotionY = y;
-			mTouchState = mScroller.isFinished() ? TOUCH_STATE_REST
-					: TOUCH_STATE_SCROLLING;
 			actionType="down";
 			break;
 		case MotionEvent.ACTION_CANCEL:
+			
 		case MotionEvent.ACTION_UP:
 			mTouchState = TOUCH_STATE_REST;
 			actionType="up";
+			Log.d("ddv", "---------------------------------");
 			break;
 		}
 		
 		Log.d("ddv", actionType+"0000onInterceptTouchEvent::"+(mTouchState != TOUCH_STATE_REST));
+		if(ScrollLayout1.SCROLLING){
+			return false;
+		}
 		return mTouchState != TOUCH_STATE_REST;
 	}
 	

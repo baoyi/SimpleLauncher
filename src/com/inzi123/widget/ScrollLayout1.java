@@ -150,6 +150,7 @@ public class ScrollLayout1 extends ViewGroup {
 		}
 	}
 
+	
 	@Override
 	public boolean onTouchEvent(MotionEvent event) {
 		//是否可滑动
@@ -179,6 +180,7 @@ public class ScrollLayout1 extends ViewGroup {
 			mLastMotionY = y;
 			//---------------------------------------------
 			actionType="1-touch-down";
+			SCROLLING=true;
 			break;
 		case MotionEvent.ACTION_MOVE:
 			int deltaX = (int) (mLastMotionX - x);
@@ -189,7 +191,7 @@ public class ScrollLayout1 extends ViewGroup {
 				break;
 			mLastMotionY = y;
 			//-------------------------------------
-			
+			SCROLLING=true;
 			mLastMotionX = x;
 			scrollBy(deltaX, 0);
 			actionType="1-touch-move";
@@ -220,18 +222,23 @@ public class ScrollLayout1 extends ViewGroup {
 			// }
 			mTouchState = TOUCH_STATE_REST;
 			actionType="1-touch-up";
+			SCROLLING=false;
+			Log.e("ddv", "----------------------");
 			break;
 		case MotionEvent.ACTION_CANCEL:
 			mTouchState = TOUCH_STATE_REST;
 			actionType="1-touch-cancel";
+			SCROLLING=false;
 			break;
 		}
-		Log.d("ddv", "1touch::::"+actionType);
+		Log.e("ddv", "1touch::::"+actionType);
 		if(getChildCount()==1){
 			return false;
 		}
 		return true;
 	}
+	
+	public static boolean SCROLLING=false;;
 
 	@Override
 	public boolean onInterceptTouchEvent(MotionEvent ev) {
@@ -254,24 +261,27 @@ public class ScrollLayout1 extends ViewGroup {
 				mTouchState = TOUCH_STATE_SCROLLING;
 			}
 			actionType="1-move";
+			SCROLLING=true;
 			break;
 		case MotionEvent.ACTION_DOWN:
 			mLastMotionX = x;
 			mLastMotionY = y;
-			mTouchState = mScroller.isFinished() ? TOUCH_STATE_SCROLLING
-					: TOUCH_STATE_REST;
+			mTouchState = mScroller.isFinished() ? TOUCH_STATE_REST
+					: TOUCH_STATE_SCROLLING;
 			actionType="1-down";
 			break;
 		case MotionEvent.ACTION_CANCEL:
 		case MotionEvent.ACTION_UP:
 			mTouchState = TOUCH_STATE_REST;
 			actionType="1-up";
+			SCROLLING=false;
 			break;
 		}
-		Log.d("ddv", actionType+"11onInterceptTouchEvent::::"+(mTouchState != TOUCH_STATE_REST));
-		if(getChildCount()==1){
-			return false;
-		}
+//		if(getChildCount()==1||mCurScreen==0||mCurScreen==getChildCount()-1){
+//			Log.e("ddv", "1:11onInterceptTouchEvent:false");
+//			return false;
+//		}
+		Log.e("ddv", actionType+"11onInterceptTouchEvent::::"+(mTouchState != TOUCH_STATE_REST));
 		return mTouchState != TOUCH_STATE_REST;
 	}
 	
