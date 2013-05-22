@@ -150,8 +150,10 @@ public class ScrollLayout1 extends ViewGroup {
 		}
 	}
 
+	boolean isscroll=true;
 	@Override
 	public boolean onTouchEvent(MotionEvent event) {
+		
 		//是否可滑动
 		if(!isScroll) {
 			return false;
@@ -166,6 +168,7 @@ public class ScrollLayout1 extends ViewGroup {
 		final float y = event.getY();
 		switch (action) {
 		case MotionEvent.ACTION_DOWN:
+			isscroll=true;
 			//Log.e(TAG, "event down!");
 			if (!mScroller.isFinished()) {
 				mScroller.abortAnimation();
@@ -178,8 +181,22 @@ public class ScrollLayout1 extends ViewGroup {
 			
 			break;
 		case MotionEvent.ACTION_MOVE:
+			Log.i("ada", "1  onTouchEvent ACTION_MOVE");
+			if(!isscroll){
+				return false;
+			}
 			int deltaX = (int) (mLastMotionX - x);
 			
+			if(mCurScreen==0&&deltaX<0){
+				isscroll=false;
+				Log.i("ada","左边不可以滑动");
+				return false;
+			}
+			if(getChildCount()==(mCurScreen+1)&&deltaX>0){
+				isscroll=false;
+				Log.i("ada","右边不可以滑动");
+				return false;
+			}
 			//---------------New Code----------------------
 			int deltaY = (int) (mLastMotionY - y);
 			if(Math.abs(deltaX) < 200 && Math.abs(deltaY) > 10)
@@ -191,6 +208,7 @@ public class ScrollLayout1 extends ViewGroup {
 			scrollBy(deltaX, 0);
 			break;
 		case MotionEvent.ACTION_UP:
+			isscroll=true;
 			//Log.e(TAG, "event : up");
 			// if (mTouchState == TOUCH_STATE_SCROLLING) {
 			final VelocityTracker velocityTracker = mVelocityTracker;
@@ -217,6 +235,7 @@ public class ScrollLayout1 extends ViewGroup {
 			mTouchState = TOUCH_STATE_REST;
 			break;
 		case MotionEvent.ACTION_CANCEL:
+			isscroll=true;
 			mTouchState = TOUCH_STATE_REST;
 			break;
 		}
@@ -235,6 +254,8 @@ public class ScrollLayout1 extends ViewGroup {
 		final float y = ev.getY();
 		switch (action) {
 		case MotionEvent.ACTION_MOVE:
+			Log.i("ada", "1  onInterceptTouchEvent ACTION_MOVE");
+
 			final int xDiff = (int) Math.abs(mLastMotionX - x);
 			if (xDiff > mTouchSlop) {
 				mTouchState = TOUCH_STATE_SCROLLING;

@@ -55,11 +55,13 @@
                     android:layout_height="100dp" >
 
                     <TextView
+                        android:background="#00FF00"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="添加控件2" />
 
                     <TextView
+                        android:background="#FF0000"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="添加控件3" />
