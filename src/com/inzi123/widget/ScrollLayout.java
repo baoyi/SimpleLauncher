@@ -154,6 +154,7 @@ public class ScrollLayout extends ViewGroup {
 
 	@Override
 	public boolean onTouchEvent(MotionEvent event) {
+		Log.i("ada", "0  onTouchEvent");
 
 		// 是否可滑动
 		if (!isScroll) {
@@ -180,7 +181,6 @@ public class ScrollLayout extends ViewGroup {
 			// ---------------------------------------------
 			return true;
 		case MotionEvent.ACTION_MOVE:
-			Log.i("ada", "0  onTouchEvent ACTION_MOVE");
 			int deltaX = (int) (mLastMotionX - x);
 
 			// ---------------New Code----------------------
@@ -229,6 +229,7 @@ public class ScrollLayout extends ViewGroup {
 
 	@Override
 	public boolean onInterceptTouchEvent(MotionEvent ev) {
+		// Log.e(TAG, "onInterceptTouchEvent-slop:" + mTouchSlop);
 		final int action = ev.getAction();
 		if ((action == MotionEvent.ACTION_MOVE)
 				&& (mTouchState != TOUCH_STATE_REST)) {
@@ -238,29 +239,27 @@ public class ScrollLayout extends ViewGroup {
 		final float y = ev.getY();
 		switch (action) {
 		case MotionEvent.ACTION_MOVE:
-			Log.e("ada", "0 onInterceptTouchEvent ACTION_MOVE");
-
-//			if (mCurScreen == 1) {
-//				LinearLayout view = (LinearLayout) getChildAt(1);
-//				if (y < view.getMeasuredHeight()) {
-//					ScrollLayout1 l = (ScrollLayout1) view.getChildAt(0);
-//					int curscreen = l.getCurScreen();
-//					curscreen++;
-//					int deltaX = (int) (mLastMotionX - x);
-//					if(curscreen==1){
-//						if(deltaX>0){
-//							return false;
-//						}
-//					}
-//					if(curscreen==l.getChildCount()){
-//						if(deltaX<0){
-//							return false;
-//						}
-//					}
-//				}
-//			
-//				
-//			}
+			if (mCurScreen == 1) {
+				LinearLayout view = (LinearLayout) getChildAt(1);
+				if (y < view.getMeasuredHeight()) {
+					ScrollLayout1 l = (ScrollLayout1) view.getChildAt(0);
+					int curscreen = l.getCurScreen();
+					curscreen++;
+					int deltaX = (int) (mLastMotionX - x);
+					if(curscreen==1){
+						if(deltaX>0){
+							return false;
+						}
+					}
+					if(curscreen==l.getChildCount()){
+						if(deltaX<0){
+							return false;
+						}
+					}
+				}
+			
+				
+			}
 			final int xDiff = (int) Math.abs(mLastMotionX - x);
 			if (xDiff > mTouchSlop) {
 				mTouchState = TOUCH_STATE_SCROLLING;
