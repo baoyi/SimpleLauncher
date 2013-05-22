@@ -181,6 +181,7 @@ public class ScrollLayout extends ViewGroup {
 			// ---------------------------------------------
 			return true;
 		case MotionEvent.ACTION_MOVE:
+			   Log.e(TAG, "0  onTouchEvent-ACTION_MOVE");
 			int deltaX = (int) (mLastMotionX - x);
 
 			// ---------------New Code----------------------
@@ -229,7 +230,6 @@ public class ScrollLayout extends ViewGroup {
 
 	@Override
 	public boolean onInterceptTouchEvent(MotionEvent ev) {
-		// Log.e(TAG, "onInterceptTouchEvent-slop:" + mTouchSlop);
 		final int action = ev.getAction();
 		if ((action == MotionEvent.ACTION_MOVE)
 				&& (mTouchState != TOUCH_STATE_REST)) {
@@ -260,6 +260,7 @@ public class ScrollLayout extends ViewGroup {
 			
 				
 			}
+		   Log.e(TAG, "0  onInterceptTouchEvent-ACTION_MOVE");
 			final int xDiff = (int) Math.abs(mLastMotionX - x);
 			if (xDiff > mTouchSlop) {
 				mTouchState = TOUCH_STATE_SCROLLING;
