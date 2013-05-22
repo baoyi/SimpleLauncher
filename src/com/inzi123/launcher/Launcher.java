@@ -341,7 +341,6 @@ public class Launcher extends Activity {
 			} catch (URISyntaxException e) {
 				e.printStackTrace();
 			}
-
 		}
 	};
 
@@ -567,6 +566,9 @@ public class Launcher extends Activity {
 			}
 			return cv;
 		}
-
 	}
+	public void delByPackageName(String packageName){
+		dbHelper.delFavByPackageName(packageName);
+	}
+	
 }

@@ -19,9 +19,12 @@ public class BootReceiver extends BroadcastReceiver {
 	        }     
 	        //接收卸载广播    
 	        if (intent.getAction().equals("android.intent.action.PACKAGE_REMOVED")) {     
-	            String packageName = intent.getDataString();     
+	            String packageName = intent.getDataString().substring(8);     
 	            Log.i("ddv", "卸载了:"  + packageName + "包名的程序");
-	            context.startService(new Intent(context,UpDataAppService.class));
+	            Intent unstallIntent=new Intent(context,UpDataAppService.class);
+	            unstallIntent.putExtra("type", "unstall");
+	            unstallIntent.putExtra("packageName", packageName);
+	            context.startService(unstallIntent);
 	        }  
 	 }
 }

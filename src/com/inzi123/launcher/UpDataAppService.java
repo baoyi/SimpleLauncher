@@ -32,7 +32,10 @@ public class UpDataAppService extends Service {
 	public int onStartCommand(Intent intent, int flags, int startId) {
 		if(launcher!=null){
 			launcher.loadApps();
-			launcher.loadFavoriteApp();
+			if(intent.getStringExtra("type")!=null&&intent.getStringExtra("type").equals("unstall")){
+				launcher.delByPackageName(intent.getStringExtra("packageName"));
+				launcher.loadFavoriteApp();
+			}
 			Log.i("ddv", "更新列表");
 		}
 		return super.onStartCommand(intent, flags, startId);

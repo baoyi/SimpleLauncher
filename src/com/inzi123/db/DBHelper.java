@@ -84,4 +84,13 @@ public class DBHelper extends SQLiteOpenHelper {
 		return count;
 	}
 
+	public int delFavByPackageName(String packagename){
+		int count=0;
+		db=getWritableDatabase();
+		count=db.delete("favoriteapp", "intent like ?", new String[]{"%cmp="+packagename+"/%"});
+		return count;
+		
+	}
+		
+	
 }
