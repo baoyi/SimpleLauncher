@@ -251,11 +251,14 @@ public class ScrollLayout extends ViewGroup {
 				if(y<100){
 					return false;
 				}
-			}actionType="move";
+			}
+			actionType="move";
 			final int xDiff = (int) Math.abs(mLastMotionX - x);
 			if (xDiff > mTouchSlop) {
 				mTouchState = TOUCH_STATE_SCROLLING;
 			}
+			mTouchState = mScroller.isFinished() ? TOUCH_STATE_REST
+					: TOUCH_STATE_SCROLLING;
 			break;
 		case MotionEvent.ACTION_DOWN:
 			mLastMotionX = x;

@@ -223,9 +223,13 @@ public class ScrollLayout1 extends ViewGroup {
 			break;
 		case MotionEvent.ACTION_CANCEL:
 			mTouchState = TOUCH_STATE_REST;
+			actionType="1-touch-cancel";
 			break;
 		}
 		Log.d("ddv", "1touch::::"+actionType);
+		if(getChildCount()==1){
+			return false;
+		}
 		return true;
 	}
 
@@ -254,9 +258,8 @@ public class ScrollLayout1 extends ViewGroup {
 		case MotionEvent.ACTION_DOWN:
 			mLastMotionX = x;
 			mLastMotionY = y;
-			mTouchState = mScroller.isFinished() ? TOUCH_STATE_REST
-					: TOUCH_STATE_SCROLLING;
-			mTouchState=TOUCH_STATE_SCROLLING;
+			mTouchState = mScroller.isFinished() ? TOUCH_STATE_SCROLLING
+					: TOUCH_STATE_REST;
 			actionType="1-down";
 			break;
 		case MotionEvent.ACTION_CANCEL:
@@ -266,6 +269,9 @@ public class ScrollLayout1 extends ViewGroup {
 			break;
 		}
 		Log.d("ddv", actionType+"11onInterceptTouchEvent::::"+(mTouchState != TOUCH_STATE_REST));
+		if(getChildCount()==1){
+			return false;
+		}
 		return mTouchState != TOUCH_STATE_REST;
 	}
 	
