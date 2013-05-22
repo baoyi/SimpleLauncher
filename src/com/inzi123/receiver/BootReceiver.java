@@ -1,4 +1,4 @@
-package receiver;
+package com.inzi123.receiver;
 
 import com.inzi123.launcher.UpDataAppService;
 

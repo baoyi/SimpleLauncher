@@ -64,7 +64,7 @@
         </service>
 
         <receiver
-            android:name="receiver.BootReceiver"
+            android:name="com.inzi123.receiver.BootReceiver"
             android:label="@string/app_name" >
             <intent-filter>
                 <action android:name="android.intent.action.PACKAGE_ADDED" />
