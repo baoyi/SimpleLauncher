@@ -164,6 +164,9 @@ public class ScrollLayout extends ViewGroup {
 		final int action = event.getAction();
 		final float x = event.getX();
 		final float y = event.getY();
+		
+		String actionType="";
+		
 		switch (action) {
 		case MotionEvent.ACTION_DOWN:
 			//Log.e(TAG, "event down!");
@@ -175,7 +178,7 @@ public class ScrollLayout extends ViewGroup {
 			//---------------New Code----------------------
 			mLastMotionY = y;
 			//---------------------------------------------
-			
+			actionType="0-touch-down";
 			break;
 		case MotionEvent.ACTION_MOVE:
 			int deltaX = (int) (mLastMotionX - x);
@@ -189,6 +192,7 @@ public class ScrollLayout extends ViewGroup {
 			
 			mLastMotionX = x;
 			scrollBy(deltaX, 0);
+			actionType="0-touch-move";
 			break;
 		case MotionEvent.ACTION_UP:
 			if(mCurScreen==1){
@@ -220,11 +224,13 @@ public class ScrollLayout extends ViewGroup {
 			}
 			// }
 			mTouchState = TOUCH_STATE_REST;
+			actionType="0-touch-up";
 			break;
 		case MotionEvent.ACTION_CANCEL:
 			mTouchState = TOUCH_STATE_REST;
 			break;
 		}
+		Log.d("ddv", actionType);
 		return true;
 	}
 
@@ -232,10 +238,11 @@ public class ScrollLayout extends ViewGroup {
 	public boolean onInterceptTouchEvent(MotionEvent ev) {
 		//Log.e(TAG, "onInterceptTouchEvent-slop:" + mTouchSlop);
 		final int action = ev.getAction();
-		if ((action == MotionEvent.ACTION_MOVE)
-				&& (mTouchState != TOUCH_STATE_REST)) {
-			return true;
-		}
+//		if ((action == MotionEvent.ACTION_MOVE)
+//				&& (mTouchState != TOUCH_STATE_REST)) {
+//			return true;
+//		}
+		String actionType="";
 		final float x = ev.getX();
 		final float y = ev.getY();
 		switch (action) {
@@ -244,7 +251,7 @@ public class ScrollLayout extends ViewGroup {
 				if(y<100){
 					return false;
 				}
-			}
+			}actionType="move";
 			final int xDiff = (int) Math.abs(mLastMotionX - x);
 			if (xDiff > mTouchSlop) {
 				mTouchState = TOUCH_STATE_SCROLLING;
@@ -255,12 +262,16 @@ public class ScrollLayout extends ViewGroup {
 			mLastMotionY = y;
 			mTouchState = mScroller.isFinished() ? TOUCH_STATE_REST
 					: TOUCH_STATE_SCROLLING;
+			actionType="down";
 			break;
 		case MotionEvent.ACTION_CANCEL:
 		case MotionEvent.ACTION_UP:
 			mTouchState = TOUCH_STATE_REST;
+			actionType="up";
 			break;
 		}
+		
+		Log.d("ddv", actionType+"0000onInterceptTouchEvent::"+(mTouchState != TOUCH_STATE_REST));
 		return mTouchState != TOUCH_STATE_REST;
 	}
 	
