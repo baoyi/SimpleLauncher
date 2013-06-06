@@ -155,24 +155,29 @@ public class Launcher extends Activity {
 		id = host.allocateAppWidgetId();
 		AppWidgetProviderInfo appWidgetProviderInfo = widgetList.get(1);
 		boolean success = false;
-		success = appWidgetManager.bindAppWidgetIdIfAllowed(id,
-				appWidgetProviderInfo.provider);
-		if (success) {
-			AppWidgetHostView hostView = host.createView(
-					Launcher.this, id, appWidgetProviderInfo);
-			childscrollLayout.addView(hostView);
-			childscrollLayout.requestLayout();
-		} else {
-			Intent intent = new Intent(AppWidgetManager.ACTION_APPWIDGET_BIND);
-			intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, id);
-			intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_PROVIDER,
-					appWidgetProviderInfo.provider);
-			// TODO: we need to make sure that this accounts for the options
-			// bundle.
-			// intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_OPTIONS,
-			// options);
-			startActivityForResult(intent, REQUEST_BIND_APPWIDGET);
+		try {
+			
+		} catch (Exception e) {
+			// TODO: handle exception
 		}
+//		success = appWidgetManager.bindAppWidgetIdIfAllowed(id,
+//				appWidgetProviderInfo.provider);
+//		if (success) {
+//			AppWidgetHostView hostView = host.createView(
+//					Launcher.this, id, appWidgetProviderInfo);
+//			childscrollLayout.addView(hostView);
+//			childscrollLayout.requestLayout();
+//		} else {
+//			Intent intent = new Intent(AppWidgetManager.ACTION_APPWIDGET_BIND);
+//			intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, id);
+//			intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_PROVIDER,
+//					appWidgetProviderInfo.provider);
+//			// TODO: we need to make sure that this accounts for the options
+//			// bundle.
+//			// intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_OPTIONS,
+//			// options);
+//			startActivityForResult(intent, REQUEST_BIND_APPWIDGET);
+//		}
 	}
 
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
