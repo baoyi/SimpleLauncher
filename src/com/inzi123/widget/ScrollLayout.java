@@ -19,7 +19,6 @@ import android.widget.Scroller;
  */
 public class ScrollLayout extends ViewGroup {
 	private static final String TAG = "ScrollLayout";
-	private static final String TAG = "ada";
 	private Scroller mScroller;
 	private VelocityTracker mVelocityTracker;
 	private int mCurScreen;
@@ -31,17 +30,8 @@ public class ScrollLayout extends ViewGroup {
 	private int mTouchSlop;
 	private float mLastMotionX;
 	private float mLastMotionY;
-    private OnViewChangeListener mOnViewChangeListener;
 	private OnViewChangeListener mOnViewChangeListener;
 
-    /**
-     * 设置是否可左右滑动
-     * @author liux
-     */
-    private boolean isScroll = true;
-    public void setIsScroll(boolean b) {
-    	this.isScroll = b;
-    }
     
 	/**
 	 * 设置是否可左右滑动
@@ -120,16 +110,12 @@ public class ScrollLayout extends ViewGroup {
 		//是否可滑动
 		if(!isScroll) {
 		// 是否可滑动
-		if (!isScroll) {
 			this.setToScreen(whichScreen);
 			return;
 		}
-		
-
 		scrollToScreen(whichScreen);
 	}
 
-	public void scrollToScreen(int whichScreen) {		
 	public void scrollToScreen(int whichScreen) {
 		// get the valid layout page
 		whichScreen = Math.max(0, Math.min(whichScreen, getChildCount() - 1));
@@ -137,7 +123,6 @@ public class ScrollLayout extends ViewGroup {
 			final int delta = whichScreen * getWidth() - getScrollX();
 			mScroller.startScroll(getScrollX(), 0, delta, 0,
 					Math.abs(delta) * 1);//持续滚动时间 以毫秒为单位
-					Math.abs(delta) * 1);// 持续滚动时间 以毫秒为单位
 			mCurScreen = whichScreen;
 			invalidate(); // Redraw the layout
             
@@ -221,7 +206,6 @@ public class ScrollLayout extends ViewGroup {
 			actionType="0-touch-down";
 			break;
 			// ---------------------------------------------
-			return true;
 		case MotionEvent.ACTION_MOVE:
 			   Log.e(TAG, "0  onTouchEvent-ACTION_MOVE");
 			int deltaX = (int) (mLastMotionX - x);
@@ -284,9 +268,9 @@ public class ScrollLayout extends ViewGroup {
 		}
 		Log.d("ddv", actionType);
 
+	}
 		return true;
 	}
-
 	@Override
 	public boolean onInterceptTouchEvent(MotionEvent ev) {
 		//Log.e(TAG, "onInterceptTouchEvent-slop:" + mTouchSlop);
@@ -354,7 +338,6 @@ public class ScrollLayout extends ViewGroup {
 			mTouchState = mScroller.isFinished() ? TOUCH_STATE_REST
 					: TOUCH_STATE_SCROLLING;
 			break;
-			break;
 
 
 
@@ -386,7 +369,6 @@ public class ScrollLayout extends ViewGroup {
 	 */
 	public void SetOnViewChangeListener(OnViewChangeListener listener)
 	{
-	public void SetOnViewChangeListener(OnViewChangeListener listener) {
 		mOnViewChangeListener = listener;
 	}
 

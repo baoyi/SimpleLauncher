@@ -1,13 +1,12 @@
 package com.inzi123.launcher;
 
-import com.baidu.carapi.WeatherApi;
-import com.baidu.location.BDLocation;
-import com.baidu.location.BDLocationListener;
-import com.inzi123.utils.PreferenceUtils;
-
 import android.app.Service;
 import android.content.Intent;
 import android.os.IBinder;
+
+import com.baidu.location.BDLocation;
+import com.baidu.location.BDLocationListener;
+import com.inzi123.utils.PreferenceUtils;
 
 public class UpdateCityService extends Service {
 	public UpdateCityService() {
@@ -15,7 +14,6 @@ public class UpdateCityService extends Service {
 
 	@Override
 	public IBinder onBind(Intent intent) {
-		// TODO: Return the communication channel to the service.
 		throw new UnsupportedOperationException("Not yet implemented");
 	}
 
@@ -28,8 +26,6 @@ public class UpdateCityService extends Service {
 
 					@Override
 					public void onReceivePoi(BDLocation arg0) {
-						// TODO Auto-generated method stub
-
 						if (arg0 == null) {
 							return;
 						}
