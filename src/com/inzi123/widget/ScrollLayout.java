@@ -1,11 +1,14 @@
 package com.inzi123.widget;
 
+import com.inzi123.launcher.Launcher;
+
 import android.content.Context;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.VelocityTracker;
 import android.view.View;
+import android.view.View.OnTouchListener;
 import android.view.ViewConfiguration;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
@@ -17,7 +20,7 @@ import android.widget.Scroller;
  * @author Yao.GUET date: 2011-05-04
  * @modify liux (http://my.oschina.net/liux)
  */
-public class ScrollLayout extends ViewGroup {
+public class ScrollLayout extends ViewGroup implements OnTouchListener{
 	private static final String TAG = "ScrollLayout";
 	private Scroller mScroller;
 	private VelocityTracker mVelocityTracker;
@@ -176,7 +179,7 @@ public class ScrollLayout extends ViewGroup {
 			return false;
 		}
 		
-
+		Launcher.view.onTouchEvent(event);
 
 
 		if (mVelocityTracker == null) {
@@ -379,5 +382,11 @@ public class ScrollLayout extends ViewGroup {
 	 */
 	public interface OnViewChangeListener {
 		public void OnViewChange(int view);
+	}
+
+	@Override
+	public boolean onTouch(View v, MotionEvent event) {
+		Launcher.view.onTouchEvent(event);
+		return false;
 	}
 }

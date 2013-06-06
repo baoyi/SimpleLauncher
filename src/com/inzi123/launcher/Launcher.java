@@ -21,6 +21,7 @@ import android.content.ServiceConnection;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
+import android.graphics.PixelFormat;
 import android.graphics.Rect;
 import android.graphics.drawable.BitmapDrawable;
 import android.net.Uri;
@@ -33,8 +34,11 @@ import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.View.OnTouchListener;
+import android.view.ViewGroup.LayoutParams;
 import android.widget.AdapterView;
 import android.widget.BaseAdapter;
 import android.widget.GridView;
@@ -52,11 +56,12 @@ import com.inzi123.fragment.SettingsFragment;
 import com.inzi123.launcher.UpDataAppService.MyBinder;
 import com.inzi123.utils.PreferenceUtils;
 import com.inzi123.utils.Utils;
+import com.inzi123.widget.MySurfaceView;
 import com.inzi123.widget.ScrollLayout;
 import com.inzi123.widget.ScrollLayout1;
 
 @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
-public class Launcher extends Activity {
+public class Launcher extends Activity implements OnTouchListener{
 
 	private GridView allAppGv;
 	private GridView favAppGv;
@@ -74,6 +79,7 @@ public class Launcher extends Activity {
 	View layout_weather;
 	private float scale;
 	private AppAdapter appAdapter;
+	public static MySurfaceView view;
 	
 
 	private ServiceConnection conn = new ServiceConnection() {
@@ -102,6 +108,9 @@ public class Launcher extends Activity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
+		view=new MySurfaceView(this);
+		LayoutParams lp = new LayoutParams(LayoutParams.FILL_PARENT,
+                LayoutParams.FILL_PARENT);
 		li = LayoutInflater.from(Launcher.this);
 		scale = getResources().getDisplayMetrics().density;
 		application = (LauncherApplication) getApplication();
@@ -173,7 +182,25 @@ public class Launcher extends Activity {
 			// options);
 			startActivityForResult(intent, REQUEST_BIND_APPWIDGET);
 		}
+		addContentView(view, lp);
+		view.setZOrderOnTop(true);
+        view.getHolder().setFormat(PixelFormat.TRANSLUCENT);
 	}
+	
+    @Override
+    public boolean onTouch(View v, MotionEvent event) {
+        view.onTouchEvent(event);
+        Log.d("ddv", "activity_ontouch"+event.getAction());
+        return false;
+    }
+
+    @Override
+    public boolean onTouchEvent(MotionEvent event) {
+        view.onTouchEvent(event);
+        Log.d("ddv", "activity_onTouchEvent"+event.getAction());
+        return false;
+    }
+    
 
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 		// 直接返回，没有选择任何一项 ，例如按Back键

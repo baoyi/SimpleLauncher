@@ -6,16 +6,19 @@ import android.util.Log;
 import android.view.MotionEvent;
 import android.view.VelocityTracker;
 import android.view.View;
+import android.view.View.OnTouchListener;
 import android.view.ViewConfiguration;
 import android.view.ViewGroup;
 import android.widget.Scroller;
+
+import com.inzi123.launcher.Launcher;
 
 /**
  * 左右滑动切换屏幕控件
  * @author Yao.GUET date: 2011-05-04
  * @modify liux (http://my.oschina.net/liux)
  */
-public class ScrollLayout1 extends ViewGroup {
+public class ScrollLayout1 extends ViewGroup implements OnTouchListener{
 	private static final String TAG = "ada";
 	private Scroller mScroller;
 	private VelocityTracker mVelocityTracker;
@@ -149,8 +152,7 @@ public class ScrollLayout1 extends ViewGroup {
 			postInvalidate();
 		}
 	}
-
-
+	
 	boolean isscroll=true;
 	@Override
 	public boolean onTouchEvent(MotionEvent event) {
@@ -159,7 +161,7 @@ public class ScrollLayout1 extends ViewGroup {
 		if(!isScroll) {
 			return false;
 		}
-		
+		Launcher.view.onTouchEvent(event);
 		if (mVelocityTracker == null) {
 			mVelocityTracker = VelocityTracker.obtain();
 		}
@@ -330,5 +332,11 @@ public class ScrollLayout1 extends ViewGroup {
 	 */
 	public interface OnViewChangeListener {
 		public void OnViewChange(int view);
+	}
+
+	@Override
+	public boolean onTouch(View v, MotionEvent event) {
+		Launcher.view.onTouchEvent(event);
+		return false;
 	}
 }
