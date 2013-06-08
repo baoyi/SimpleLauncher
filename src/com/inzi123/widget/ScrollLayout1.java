@@ -2,7 +2,6 @@ package com.inzi123.widget;
 
 import android.content.Context;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.MotionEvent;
 import android.view.VelocityTracker;
 import android.view.View;
@@ -12,6 +11,7 @@ import android.view.ViewGroup;
 import android.widget.Scroller;
 
 import com.inzi123.launcher.Launcher;
+import com.inzi123.utils.LogUtils;
 
 /**
  * 左右滑动切换屏幕控件
@@ -156,7 +156,7 @@ public class ScrollLayout1 extends ViewGroup implements OnTouchListener{
 	boolean isscroll=true;
 	@Override
 	public boolean onTouchEvent(MotionEvent event) {
-		Log.i("ada", "1  onTouchEvent");
+		LogUtils.i("ada", "1  onTouchEvent");
 		//是否可滑动
 		if(!isScroll) {
 			return false;
@@ -175,7 +175,7 @@ public class ScrollLayout1 extends ViewGroup implements OnTouchListener{
 		switch (action) {
 		case MotionEvent.ACTION_DOWN:
 			isscroll=true;
-			//Log.e(TAG, "event down!");
+			//LogUtils.e(TAG, "event down!");
 			if (!mScroller.isFinished()) {
 				mScroller.abortAnimation();
 			}
@@ -188,7 +188,7 @@ public class ScrollLayout1 extends ViewGroup implements OnTouchListener{
 			
 			break;
 		case MotionEvent.ACTION_MOVE:
-			   Log.i(TAG, "1  onTouchEvent-ACTION_MOVE");
+			   LogUtils.i(TAG, "1  onTouchEvent-ACTION_MOVE");
 //			if(!isscroll){
 //				return false;
 //			}
@@ -196,15 +196,15 @@ public class ScrollLayout1 extends ViewGroup implements OnTouchListener{
 			
 //			if(mCurScreen==0&&deltaX<0){
 //				isscroll=false;
-//				Log.i("ada","左边不可以滑动");
+//				LogUtils.i("ada","左边不可以滑动");
 //				return false;
 //			}
 //			if(getChildCount()==(mCurScreen+1)&&deltaX>0){
 //				isscroll=false;
-//				Log.i("ada","右边不可以滑动");
+//				LogUtils.i("ada","右边不可以滑动");
 //				return false;
 //			}
-			   Log.i(TAG, "1  可以移动");
+			   LogUtils.i(TAG, "1  可以移动");
 			//---------------New Code----------------------
 			int deltaY = (int) (mLastMotionY - y);
 			if(Math.abs(deltaX) < 200 && Math.abs(deltaY) > 10)
@@ -218,20 +218,20 @@ public class ScrollLayout1 extends ViewGroup implements OnTouchListener{
 			break;
 		case MotionEvent.ACTION_UP:
 			isscroll=true;
-			//Log.e(TAG, "event : up");
+			//LogUtils.e(TAG, "event : up");
 			// if (mTouchState == TOUCH_STATE_SCROLLING) {
 			final VelocityTracker velocityTracker = mVelocityTracker;
 			velocityTracker.computeCurrentVelocity(1000);
 			int velocityX = (int) velocityTracker.getXVelocity();
-			//Log.e(TAG, "velocityX:" + velocityX);
+			//LogUtils.e(TAG, "velocityX:" + velocityX);
 			if (velocityX > SNAP_VELOCITY && mCurScreen > 0) {
 				// Fling enough to move left
-				//Log.e(TAG, "snap left");
+				//LogUtils.e(TAG, "snap left");
 				snapToScreen(mCurScreen - 1);
 			} else if (velocityX < -SNAP_VELOCITY
 					&& mCurScreen < getChildCount() - 1) {
 				// Fling enough to move right
-				//Log.e(TAG, "snap right");
+				//LogUtils.e(TAG, "snap right");
 				snapToScreen(mCurScreen + 1);
 			} else {
 				snapToDestination();
@@ -250,7 +250,7 @@ public class ScrollLayout1 extends ViewGroup implements OnTouchListener{
 			actionType="1-touch-cancel";
 			break;
 		}
-		Log.d("ddv", "1touch::::"+actionType);
+		LogUtils.d("ddv", "1touch::::"+actionType);
 		if(getChildCount()==1){
 			return false;
 		}
@@ -263,8 +263,8 @@ public class ScrollLayout1 extends ViewGroup implements OnTouchListener{
 
 	@Override
 	public boolean onInterceptTouchEvent(MotionEvent ev) {
-		//Log.e(TAG, "onInterceptTouchEvent-slop:" + mTouchSlop);
-		Log.i("ada", "1  onInterceptTouchEvent");
+		//LogUtils.e(TAG, "onInterceptTouchEvent-slop:" + mTouchSlop);
+		LogUtils.i("ada", "1  onInterceptTouchEvent");
 		final int action = ev.getAction();
 //		if ((action == MotionEvent.ACTION_MOVE)
 //				&& (mTouchState != TOUCH_STATE_REST)) {
@@ -282,7 +282,7 @@ public class ScrollLayout1 extends ViewGroup implements OnTouchListener{
 		
 		switch (action) {
 		case MotionEvent.ACTION_MOVE:
-			   Log.i(TAG, "1  onInterceptTouchEvent-ACTION_MOVE");
+			   LogUtils.i(TAG, "1  onInterceptTouchEvent-ACTION_MOVE");
 			final int xDiff = (int) Math.abs(mLastMotionX - x);
 			if (xDiff > mTouchSlop) {
 				mTouchState = TOUCH_STATE_SCROLLING;
@@ -305,7 +305,7 @@ public class ScrollLayout1 extends ViewGroup implements OnTouchListener{
 			actionType="1-up";
 			break;
 		}
-		Log.d("ddv", actionType+"11onInterceptTouchEvent::::"+(mTouchState != TOUCH_STATE_REST));
+		LogUtils.d("ddv", actionType+"11onInterceptTouchEvent::::"+(mTouchState != TOUCH_STATE_REST));
 		if(getChildCount()==1){
 			return false;
 		}
