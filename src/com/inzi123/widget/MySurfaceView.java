@@ -52,7 +52,7 @@ public class MySurfaceView extends SurfaceView implements SurfaceHolder.Callback
     public MySurfaceView(Context context) {
         super(context);
         holder = this.getHolder();// 获取holder
-        pointTouch = new ArrayList<Point>(8);
+        pointTouch = new ArrayList<Point>(40);
         touchBackPaint = new Paint();
         touchPaint = new Paint();
         holder.addCallback(this);
@@ -101,7 +101,7 @@ public class MySurfaceView extends SurfaceView implements SurfaceHolder.Callback
                 break;
             case MotionEvent.ACTION_MOVE:
                 Point point = new Point(x, y);
-                if (pointTouch.size() > 8) {
+                if (pointTouch.size() > 40) {
                     pointTouch.remove(0);
                 }
                 pointTouch.add(point);
@@ -199,9 +199,9 @@ public class MySurfaceView extends SurfaceView implements SurfaceHolder.Callback
                 }
                 canvas.drawLine(startX, startY, stopX, stopY,
                         touchBackPaint);
-                canvas.drawLine(startX, startY, stopX, stopY, touchPaint);
+              canvas.drawLine(startX, startY, stopX, stopY, touchPaint);
                 pointStart.time++;
-                if (pointStart.time > 7)
+                if (pointStart.time > 40)
                     pointTouch.remove(i);
             }
         } catch (Exception ex) {

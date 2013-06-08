@@ -22,6 +22,7 @@ import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import android.graphics.PixelFormat;
+import android.graphics.PointF;
 import android.graphics.Rect;
 import android.graphics.drawable.BitmapDrawable;
 import android.net.Uri;
@@ -35,18 +36,22 @@ import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
+import android.view.ScaleGestureDetector;
 import android.view.View;
-import android.view.ViewGroup;
 import android.view.View.OnTouchListener;
+import android.view.ViewGroup;
 import android.view.ViewGroup.LayoutParams;
 import android.widget.AdapterView;
 import android.widget.BaseAdapter;
+import android.widget.FrameLayout;
 import android.widget.GridView;
 import android.widget.LinearLayout;
 import android.widget.PopupMenu;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.almeros.android.multitouch.gesturedetectors.MoveGestureDetector;
+import com.almeros.android.multitouch.gesturedetectors.RotateGestureDetector;
 import com.inzi123.cache.IconCache;
 import com.inzi123.data.Datas;
 import com.inzi123.db.DBHelper;
@@ -81,6 +86,15 @@ public class Launcher extends Activity implements OnTouchListener{
 	private AppAdapter appAdapter;
 	public static MySurfaceView view;
 	
+    private float mScaleFactor = .4f;
+    private float mRotationDegrees = 0.f;
+    private float mFocusX = 0.f;
+    private float mFocusY = 0.f;  
+    private int mImageHeight, mImageWidth;
+
+    private ScaleGestureDetector mScaleDetector;
+    private RotateGestureDetector mRotateDetector;
+    private MoveGestureDetector mMoveDetector;
 
 	private ServiceConnection conn = new ServiceConnection() {
 
@@ -104,6 +118,7 @@ public class Launcher extends Activity implements OnTouchListener{
 	private static final int REQUEST_BIND_APPWIDGET = 11;
 
 	ScrollLayout scrollLayout;
+	FrameLayout main;
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -193,8 +208,56 @@ public class Launcher extends Activity implements OnTouchListener{
 //			startActivityForResult(intent, REQUEST_BIND_APPWIDGET);
 //		}
 
+        main=(FrameLayout) findViewById(R.id.main);
+		mScaleDetector = new ScaleGestureDetector(getApplicationContext(), new ScaleListener());
+		mRotateDetector = new RotateGestureDetector(getApplicationContext(), new RotateListener());
+		mMoveDetector = new MoveGestureDetector(getApplicationContext(), new MoveListener());
+		main.setOnTouchListener(new OnTouchListener() {
+			
+			@Override
+			public boolean onTouch(View v, MotionEvent event) {
+		        mScaleDetector.onTouchEvent(event);
+		        mRotateDetector.onTouchEvent(event);
+		        mMoveDetector.onTouchEvent(event);
+				return true;
+			}
+		});
+        
+	}
+	private class ScaleListener extends ScaleGestureDetector.SimpleOnScaleGestureListener {
+		@Override
+		public boolean onScale(ScaleGestureDetector detector) {
+			mScaleFactor *= detector.getScaleFactor(); // scale change since previous event
+			
+			// Don't let the object get too small or too large.
+			mScaleFactor = Math.max(0.1f, Math.min(mScaleFactor, 10.0f)); 
+
+			return true;
+		}
 	}
 	
+	private class RotateListener extends RotateGestureDetector.SimpleOnRotateGestureListener {
+		@Override
+		public boolean onRotate(RotateGestureDetector detector) {
+			mRotationDegrees -= detector.getRotationDegreesDelta();
+			
+			Log.i("ada", "mRotationDegrees:"+mRotationDegrees);
+			return true;
+		}
+	}	
+	
+	private class MoveListener extends MoveGestureDetector.SimpleOnMoveGestureListener {
+		@Override
+		public boolean onMove(MoveGestureDetector detector) {
+			PointF d = detector.getFocusDelta();
+			mFocusX += d.x;
+			mFocusY += d.y;		
+
+			// mFocusX = detector.getFocusX();
+			// mFocusY = detector.getFocusY();
+			return true;
+		}
+	}
     @Override
     public boolean onTouch(View v, MotionEvent event) {
         view.onTouchEvent(event);
