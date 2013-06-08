@@ -56,6 +56,7 @@ import com.almeros.android.multitouch.gesturedetectors.RotateGestureDetector;
 import com.inzi123.cache.IconCache;
 import com.inzi123.data.Datas;
 import com.inzi123.db.DBHelper;
+import com.inzi123.entity.AppSort;
 import com.inzi123.entity.ApplicationInfo;
 import com.inzi123.entity.FavoriteApp;
 import com.inzi123.fragment.SettingsFragment;
@@ -72,8 +73,12 @@ public class Launcher extends Activity implements OnTouchListener {
 	private GridView allAppGv;
 	private GridView favAppGv;
 	ScrollLayout1 childscrollLayout;
-	private ArrayList<ApplicationInfo> allAppList = new ArrayList<ApplicationInfo>();
+	private ArrayList<AppSort> sortAppList=new ArrayList<AppSort>();
+	private HashMap<String,ApplicationInfo> allAppMap = new HashMap<String,ApplicationInfo>();
 	private ArrayList<FavoriteApp> favoriteAppList = new ArrayList<FavoriteApp>();
+	
+	private String sort=DBHelper.APPNAME;
+	private String order=DBHelper.ASC;
 
 	PackageManager pm;
 	IconCache iconCache;
@@ -671,7 +676,7 @@ public class Launcher extends Activity implements OnTouchListener {
 					break;
 				}
 				case 1: {
-					dbHelper.addApp(ai, ai.resolveInfo.loadLabel(pm).toString());
+					dbHelper.addAppToFav(ai);
 					loadFavoriteApp();
 					Log.d("ddv", "收藏");
 					menu.dismiss();
@@ -696,7 +701,6 @@ public class Launcher extends Activity implements OnTouchListener {
 	}
 
 	public void loadApps() {
-
 		Intent mainIntent = new Intent(Intent.ACTION_MAIN, null);
 		mainIntent.addCategory(Intent.CATEGORY_LAUNCHER);
 		final List<ResolveInfo> apps = pm.queryIntentActivities(mainIntent, 0);
@@ -704,8 +708,11 @@ public class Launcher extends Activity implements OnTouchListener {
 
 			ApplicationInfo ai = new ApplicationInfo(getPackageManager(),
 					resolveInfo, iconCache, null);
-			allAppList.add(ai);
+			allAppMap.put(ai.getmPack(), ai);
 		}
+		dbHelper.addAppListToSort(allAppMap);
+		sortAppList=dbHelper.getAllAppFromSort(sort,order);
+		
 		allAppGv.setAdapter(appAdapter);
 	}
 
@@ -717,19 +724,19 @@ public class Launcher extends Activity implements OnTouchListener {
 	}
 
 	class AppAdapter extends BaseAdapter {
-
+		
 		@Override
 		public int getCount() {
-			if (allAppList != null) {
-				return allAppList.size();
+			if (sortAppList != null) {
+				return sortAppList.size();
 			}
 			return 0;
 		}
 
 		@Override
 		public Object getItem(int arg0) {
-			if (allAppList != null) {
-				return allAppList.get(arg0);
+			if (sortAppList != null) {
+				return sortAppList.get(arg0);
 			}
 			return null;
 		}
@@ -751,7 +758,7 @@ public class Launcher extends Activity implements OnTouchListener {
 			} else {
 				tv = (TextView) cv.getTag();
 			}
-			ApplicationInfo ai = allAppList.get(arg0);
+			ApplicationInfo ai = allAppMap.get(sortAppList.get(arg0).getPackagename());
 			BitmapDrawable drawable = new BitmapDrawable(
 					iconCache.getIcon(ai.intent));
 			drawable.setBounds(0, 0, appIconSize, appIconSize);

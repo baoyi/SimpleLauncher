@@ -16,10 +16,10 @@
 
 package com.inzi123.entity;
 
+import java.io.File;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.HashMap;
-
-import com.inzi123.cache.IconCache;
 
 import android.content.ComponentName;
 import android.content.Intent;
@@ -29,10 +29,12 @@ import android.content.pm.ResolveInfo;
 import android.graphics.Bitmap;
 import android.util.Log;
 
+import com.inzi123.cache.IconCache;
+
 /**
- * Represents an app in AllAppsView.
+ * Represents an ApplicationInfo in AllAppsView.
  */
-public class ApplicationInfo extends ItemInfo {
+public class ApplicationInfo extends ItemInfo  {
 	private static final String TAG = "Launcher2.ApplicationInfo";
 
 	/**
@@ -46,7 +48,7 @@ public class ApplicationInfo extends ItemInfo {
 	public Bitmap iconBitmap;
 
 	/**
-	 * The time at which the app was first installed.
+	 * The time at which the ApplicationInfo was first installed.
 	 */
 	public long firstInstallTime;
 
@@ -58,6 +60,24 @@ public class ApplicationInfo extends ItemInfo {
 	public ResolveInfo resolveInfo;
 
 	public int flags = 0;
+	
+	
+	  /**
+     * Label or Name [USED IN equals METHOD]
+     */
+    private String mName;
+
+    /**
+     * Package Name [USED IN equals METHOD]
+     */
+    private String mPack;
+
+    /**
+     * When the application was installed (Installed Date)
+     */
+    private long mInst;
+
+
 
 	ApplicationInfo() {
 		//itemType = LauncherSettings.BaseLauncherColumns.ITEM_TYPE_SHORTCUT;
@@ -68,18 +88,28 @@ public class ApplicationInfo extends ItemInfo {
 	 */
 	public ApplicationInfo(PackageManager pm, ResolveInfo info,
 			IconCache iconCache, HashMap<Object, CharSequence> labelCache) {
-		final String packageName = info.activityInfo.applicationInfo.packageName;
-		
 		resolveInfo=info;
+		 this.mPack = resolveInfo.activityInfo.applicationInfo.packageName;
 		
-		this.componentName = new ComponentName(packageName,
+		  this.mName = resolveInfo.activityInfo.applicationInfo.loadLabel(pm).toString();
+		  
+		// Full path to the location of this package
+	        {
+	            String dirPath = resolveInfo.activityInfo.applicationInfo.sourceDir;
+	            File dirResource = new File(dirPath);
+	            this.mInst = dirResource.lastModified();
+	        }
+
+		
+		
+		this.componentName = new ComponentName(mPack,
 				info.activityInfo.name);
 		this.container = ItemInfo.NO_ID;
 		this.setActivity(componentName, Intent.FLAG_ACTIVITY_NEW_TASK
 				| Intent.FLAG_ACTIVITY_RESET_TASK_IF_NEEDED);
 
 		try {
-			int appFlags = pm.getApplicationInfo(packageName, 0).flags;
+			int appFlags = pm.getApplicationInfo(mPack, 0).flags;
 			if ((appFlags & android.content.pm.ApplicationInfo.FLAG_SYSTEM) == 0) {
 				flags |= DOWNLOADED_FLAG;
 
@@ -87,10 +117,10 @@ public class ApplicationInfo extends ItemInfo {
 					flags |= UPDATED_SYSTEM_APP_FLAG;
 				}
 			}
-			firstInstallTime = pm.getPackageInfo(packageName, 0).firstInstallTime;
+			firstInstallTime = pm.getPackageInfo(mPack, 0).firstInstallTime;
 		} catch (NameNotFoundException e) {
 			Log.d(TAG, "PackageManager.getApplicationInfo failed for "
-					+ packageName);
+					+ mPack);
 		}
 
 		//iconCache.getTitleAndIcon(this, info, labelCache);
@@ -146,4 +176,29 @@ public class ApplicationInfo extends ItemInfo {
 		}
 	}
 
+	public String getmName() {
+		return mName;
+	}
+
+	public void setmName(String mName) {
+		this.mName = mName;
+	}
+
+	public String getmPack() {
+		return mPack;
+	}
+
+	public void setmPack(String mPack) {
+		this.mPack = mPack;
+	}
+
+	public long getmInst() {
+		return mInst;
+	}
+
+	public void setmInst(long mInst) {
+		this.mInst = mInst;
+	}
+	
+	
 }
