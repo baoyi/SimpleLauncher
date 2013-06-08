@@ -51,6 +51,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.almeros.android.multitouch.gesturedetectors.MoveGestureDetector;
+import com.almeros.android.multitouch.gesturedetectors.MoveGestureDetector.OnMoveGestureListener;
 import com.almeros.android.multitouch.gesturedetectors.RotateGestureDetector;
 import com.inzi123.cache.IconCache;
 import com.inzi123.data.Datas;
@@ -66,7 +67,7 @@ import com.inzi123.widget.ScrollLayout;
 import com.inzi123.widget.ScrollLayout1;
 
 @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
-public class Launcher extends Activity implements OnTouchListener{
+public class Launcher extends Activity implements OnTouchListener {
 
 	private GridView allAppGv;
 	private GridView favAppGv;
@@ -85,16 +86,20 @@ public class Launcher extends Activity implements OnTouchListener{
 	private float scale;
 	private AppAdapter appAdapter;
 	public static MySurfaceView view;
-	
-    private float mScaleFactor = .4f;
-    private float mRotationDegrees = 0.f;
-    private float mFocusX = 0.f;
-    private float mFocusY = 0.f;  
-    private int mImageHeight, mImageWidth;
 
-    private ScaleGestureDetector mScaleDetector;
-    private RotateGestureDetector mRotateDetector;
-    private MoveGestureDetector mMoveDetector;
+	private float mScaleFactor = .4f;
+	private float mRotationDegrees = 0.f;
+	private float mFocusX = 0.f;
+	private float mFocusY = 0.f;
+	private float starX = 0.f;
+	private float starY = 0.f;
+	private float endX = 0.f;
+	private float endY = 0.f;
+	private int mImageHeight, mImageWidth;
+
+	private ScaleGestureDetector mScaleDetector;
+	private RotateGestureDetector mRotateDetector;
+	private MoveGestureDetector mMoveDetector;
 
 	private ServiceConnection conn = new ServiceConnection() {
 
@@ -119,13 +124,14 @@ public class Launcher extends Activity implements OnTouchListener{
 
 	ScrollLayout scrollLayout;
 	FrameLayout main;
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
-		view=new MySurfaceView(this);
+		view = new MySurfaceView(this);
 		LayoutParams lp = new LayoutParams(LayoutParams.FILL_PARENT,
-                LayoutParams.FILL_PARENT);
+				LayoutParams.FILL_PARENT);
 		li = LayoutInflater.from(Launcher.this);
 		scale = getResources().getDisplayMetrics().density;
 		application = (LauncherApplication) getApplication();
@@ -135,15 +141,15 @@ public class Launcher extends Activity implements OnTouchListener{
 		favAppGv = (GridView) findViewById(R.id.favAppGv);
 		weathtext = (TextView) findViewById(R.id.weathtext);
 		layout_weather = findViewById(R.id.layout_weather);
-		scrollLayout= (ScrollLayout) findViewById(R.id.scrollLayout);
-		childscrollLayout= (ScrollLayout1) findViewById(R.id.childscrollLayout);
+		scrollLayout = (ScrollLayout) findViewById(R.id.scrollLayout);
+		childscrollLayout = (ScrollLayout1) findViewById(R.id.childscrollLayout);
 		scrollLayout.setToScreen(1);
 		pm = getPackageManager();
 		appAdapter = new AppAdapter();
 		favortieGvAdapter = new FavortieGvAdapter();
-		Intent bindservice=new Intent(this, UpDataAppService.class);
+		Intent bindservice = new Intent(this, UpDataAppService.class);
 		bindService(bindservice, conn, Context.BIND_AUTO_CREATE);
-		
+
 		loadApps();
 		appAdapter = new AppAdapter();
 		favortieGvAdapter = new FavortieGvAdapter();
@@ -157,7 +163,7 @@ public class Launcher extends Activity implements OnTouchListener{
 		favAppGv.setOnItemLongClickListener(favItemLongClickListener);
 		SettingsFragment f = new SettingsFragment();
 		f.getView();
-		city = PreferenceUtils.getStringValue(this, "city","芝加哥");
+		city = PreferenceUtils.getStringValue(this, "city", "芝加哥");
 		SharedPreferences sp = getSharedPreferences(
 				"com.inzi123.launcher_preferences", Context.MODE_PRIVATE);
 		city = sp.getString("city", "奥斯汀");
@@ -169,109 +175,134 @@ public class Launcher extends Activity implements OnTouchListener{
 		startService(alert);
 		String text = PreferenceUtils.getStringValue(this, "weatherinfo");
 		weathtext.setText(text);
-		
-		
+
 		appWidgetManager = AppWidgetManager.getInstance(this);
 		widgetList = appWidgetManager.getInstalledProviders();
 		host = new AppWidgetHost(this, APPWIDGET_HOST_ID);
 		host.startListening();
-		
+
 		id = host.allocateAppWidgetId();
 		AppWidgetProviderInfo appWidgetProviderInfo = widgetList.get(1);
 		boolean success = false;
 		try {
-			
+
 		} catch (Exception e) {
 			// TODO: handle exception
 		}
 
 		addContentView(view, lp);
 		view.setZOrderOnTop(true);
-        view.getHolder().setFormat(PixelFormat.TRANSLUCENT);
+		view.getHolder().setFormat(PixelFormat.TRANSLUCENT);
 
-//		success = appWidgetManager.bindAppWidgetIdIfAllowed(id,
-//				appWidgetProviderInfo.provider);
-//		if (success) {
-//			AppWidgetHostView hostView = host.createView(
-//					Launcher.this, id, appWidgetProviderInfo);
-//			childscrollLayout.addView(hostView);
-//			childscrollLayout.requestLayout();
-//		} else {
-//			Intent intent = new Intent(AppWidgetManager.ACTION_APPWIDGET_BIND);
-//			intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, id);
-//			intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_PROVIDER,
-//					appWidgetProviderInfo.provider);
-//			// TODO: we need to make sure that this accounts for the options
-//			// bundle.
-//			// intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_OPTIONS,
-//			// options);
-//			startActivityForResult(intent, REQUEST_BIND_APPWIDGET);
-//		}
+		// success = appWidgetManager.bindAppWidgetIdIfAllowed(id,
+		// appWidgetProviderInfo.provider);
+		// if (success) {
+		// AppWidgetHostView hostView = host.createView(
+		// Launcher.this, id, appWidgetProviderInfo);
+		// childscrollLayout.addView(hostView);
+		// childscrollLayout.requestLayout();
+		// } else {
+		// Intent intent = new Intent(AppWidgetManager.ACTION_APPWIDGET_BIND);
+		// intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, id);
+		// intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_PROVIDER,
+		// appWidgetProviderInfo.provider);
+		// // TODO: we need to make sure that this accounts for the options
+		// // bundle.
+		// // intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_OPTIONS,
+		// // options);
+		// startActivityForResult(intent, REQUEST_BIND_APPWIDGET);
+		// }
 
-        main=(FrameLayout) findViewById(R.id.main);
-		mScaleDetector = new ScaleGestureDetector(getApplicationContext(), new ScaleListener());
-		mRotateDetector = new RotateGestureDetector(getApplicationContext(), new RotateListener());
-		mMoveDetector = new MoveGestureDetector(getApplicationContext(), new MoveListener());
+		main = (FrameLayout) findViewById(R.id.main);
+		mScaleDetector = new ScaleGestureDetector(getApplicationContext(),
+				new ScaleListener());
+		mRotateDetector = new RotateGestureDetector(getApplicationContext(),
+				new RotateListener());
+		mMoveDetector = new MoveGestureDetector(getApplicationContext(),
+				new MoveListener());
 		main.setOnTouchListener(new OnTouchListener() {
-			
+
 			@Override
 			public boolean onTouch(View v, MotionEvent event) {
-		        mScaleDetector.onTouchEvent(event);
-		        mRotateDetector.onTouchEvent(event);
-		        mMoveDetector.onTouchEvent(event);
+				mScaleDetector.onTouchEvent(event);
+				mRotateDetector.onTouchEvent(event);
+				mMoveDetector.onTouchEvent(event);
 				return true;
 			}
 		});
-        
 	}
-	private class ScaleListener extends ScaleGestureDetector.SimpleOnScaleGestureListener {
+
+	private class ScaleListener extends
+			ScaleGestureDetector.SimpleOnScaleGestureListener {
 		@Override
 		public boolean onScale(ScaleGestureDetector detector) {
-			mScaleFactor *= detector.getScaleFactor(); // scale change since previous event
-			
+			mScaleFactor *= detector.getScaleFactor(); // scale change since
+														// previous event
+
 			// Don't let the object get too small or too large.
-			mScaleFactor = Math.max(0.1f, Math.min(mScaleFactor, 10.0f)); 
+			mScaleFactor = Math.max(0.1f, Math.min(mScaleFactor, 10.0f));
 
 			return true;
 		}
 	}
-	
-	private class RotateListener extends RotateGestureDetector.SimpleOnRotateGestureListener {
+
+	private class RotateListener extends
+			RotateGestureDetector.SimpleOnRotateGestureListener {
 		@Override
 		public boolean onRotate(RotateGestureDetector detector) {
 			mRotationDegrees -= detector.getRotationDegreesDelta();
-			
-			Log.i("ada", "mRotationDegrees:"+mRotationDegrees);
+
+			Log.i("ada", "mRotationDegrees:" + mRotationDegrees);
 			return true;
 		}
-	}	
-	
-	private class MoveListener extends MoveGestureDetector.SimpleOnMoveGestureListener {
+	}
+
+	private class MoveListener implements OnMoveGestureListener {
+
 		@Override
 		public boolean onMove(MoveGestureDetector detector) {
 			PointF d = detector.getFocusDelta();
 			mFocusX += d.x;
-			mFocusY += d.y;		
-
+			mFocusY += d.y;
+			endX =+ d.x;
+			endY=+ d.y;
 			// mFocusX = detector.getFocusX();
 			// mFocusY = detector.getFocusY();
 			return true;
 		}
-	}
-    @Override
-    public boolean onTouch(View v, MotionEvent event) {
-        view.onTouchEvent(event);
-        Log.d("ddv", "activity_ontouch"+event.getAction());
-        return false;
-    }
 
-    @Override
-    public boolean onTouchEvent(MotionEvent event) {
-        view.onTouchEvent(event);
-        Log.d("ddv", "activity_onTouchEvent"+event.getAction());
-        return false;
-    }
-    
+		@Override
+		public boolean onMoveBegin(MoveGestureDetector detector) {
+			PointF d = detector.getFocusDelta();
+			starX = d.x;
+			starY=d.y;
+			return true;
+		}
+
+		@Override
+		public void onMoveEnd(MoveGestureDetector detector) {
+			PointF d = detector.getFocusDelta();
+			if (endY - starY > 200) {
+                Toast.makeText(getApplication(), "你下滑了", Toast.LENGTH_SHORT).show();
+			}
+
+		}
+
+	}
+
+	@Override
+	public boolean onTouch(View v, MotionEvent event) {
+		view.onTouchEvent(event);
+		Log.d("ddv", "activity_ontouch" + event.getAction());
+		return false;
+	}
+
+	@Override
+	public boolean onTouchEvent(MotionEvent event) {
+		view.onTouchEvent(event);
+		Log.d("ddv", "activity_onTouchEvent" + event.getAction());
+		return false;
+	}
 
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 		// 直接返回，没有选择任何一项 ，例如按Back键
@@ -322,7 +353,7 @@ public class Launcher extends Activity implements OnTouchListener{
 		}
 
 	}
-	
+
 	private static String TAG = "AddAppWidget";
 	private static final int MY_REQUEST_APPWIDGET = 1;
 	private static final int MY_CREATE_APPWIDGET = 2;
@@ -334,8 +365,7 @@ public class Launcher extends Activity implements OnTouchListener{
 		// 等同于上面的获取方式
 		Log.i(TAG, "completeAddAppWidget : appWidgetId is ----> " + appWidgetId);
 		if (appWidgetId == -1) {
-			Toast.makeText(Launcher.this, "添加窗口小部件有误",
-					Toast.LENGTH_SHORT);
+			Toast.makeText(Launcher.this, "添加窗口小部件有误", Toast.LENGTH_SHORT);
 			return;
 		}
 		AppWidgetProviderInfo appWidgetProviderInfo = appWidgetManager
@@ -355,7 +385,6 @@ public class Launcher extends Activity implements OnTouchListener{
 		// 添加至LinearLayout父视图中
 		childscrollLayout.addView(hostView);
 	}
-	
 
 	String city;
 
@@ -793,8 +822,9 @@ public class Launcher extends Activity implements OnTouchListener{
 			return cv;
 		}
 	}
-	public void delByPackageName(String packageName){
+
+	public void delByPackageName(String packageName) {
 		dbHelper.delFavByPackageName(packageName);
 	}
-	
+
 }
